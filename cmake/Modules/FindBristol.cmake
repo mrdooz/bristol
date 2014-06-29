@@ -27,11 +27,10 @@ foreach(FIND_BRISTOL_COMPONENT ${BRISTOL_FIND_COMPONENTS})
                  PATHS ${FIND_BRISTOL_LIB_PATHS})
 
     # release library
-    # todo: fix this..
-#    find_library(BRISTOL_${FIND_BRISTOL_COMPONENT_UPPER}_LIBRARY_RELEASE
-#                 NAMES ${FIND_BRISTOL_COMPONENT_NAME}
-#                 PATH_SUFFIXES Release
-#                 PATHS ${FIND_BRISTOL_LIB_PATHS})
+    find_library(BRISTOL_${FIND_BRISTOL_COMPONENT_UPPER}_LIBRARY_RELEASE
+                 NAMES ${FIND_BRISTOL_COMPONENT_NAME}
+                 PATH_SUFFIXES Release
+                 PATHS ${FIND_BRISTOL_LIB_PATHS})
 
                 
     # add to the global list of libraries

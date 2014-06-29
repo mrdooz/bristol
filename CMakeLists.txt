@@ -35,15 +35,9 @@ set(SRC_SFML
   sfml/virtual_window.hpp sfml/virtual_window_manager.hpp sfml/window_event_manager.hpp
 )
 
-
 add_library(${LIBRARY_NAME_MAIN} STATIC ${SRC_MAIN})
-install(TARGETS ${LIBRARY_NAME_MAIN} LIBRARY DESTINATION lib COMPONENT main)
-
 add_library(${LIBRARY_NAME_DX} STATIC ${SRC_DX})
-install(TARGETS ${LIBRARY_NAME_DX} LIBRARY DESTINATION lib COMPONENT dx)
-
 add_library(${LIBRARY_NAME_SFML} STATIC ${SRC_SFML})
-install(TARGETS ${LIBRARY_NAME_SFML} LIBRARY DESTINATION lib COMPONENT sfml)
 
 if (APPLE)
   # change c++ standard library to libc++ (llvm)
