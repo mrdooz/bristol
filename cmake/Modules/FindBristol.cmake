@@ -1,8 +1,7 @@
 # valid components are: main dx bristol
 
 # find the Bristol include directory
-find_path(BRISTOL_INCLUDE_DIR bristol.hpp
-          PATH_SUFFIXES bristol
+find_path(BRISTOL_INCLUDE_DIR bristol/bristol.hpp
           PATHS
           /projects/bristol/)
 
