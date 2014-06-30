@@ -36,6 +36,21 @@ namespace bristol
   };
 
   //-----------------------------------------------------------------------------
+  class ArcShape : public sf::Shape
+  {
+  public:
+    ArcShape(const sf::Vector2f& center, float radius, float startAngle, float endAngle, uint32_t segments = 32);
+    virtual uint32_t getPointCount() const;
+    virtual sf::Vector2f getPoint(uint32_t index) const;
+
+  private:
+    sf::Vector2f _center;
+    float _radius;
+    float _startAngle, _endAngle;
+    uint32_t _segments;
+  };
+
+  //-----------------------------------------------------------------------------
   class LineShape : public sf::Shape
   {
   public:

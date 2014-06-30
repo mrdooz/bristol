@@ -54,4 +54,10 @@ namespace bristol
     }
   }
 
+  template <typename To, typename From>
+  sf::Vector2<To> VectorCast(const sf::Vector2<From>& src)
+  {
+    return sf::Vector2<To>((To)src.x, (To)src.y);
+  }
+
 }

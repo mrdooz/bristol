@@ -129,6 +129,39 @@ Vector2f LineShape::getPoint(unsigned int index) const
 }
 
 //-----------------------------------------------------------------------------
+ArcShape::ArcShape(
+  const Vector2f& center,
+  float radius,
+  float startAngle,
+  float endAngle,
+  uint32_t segments)
+  : _center(center)
+  , _radius(radius)
+  , _startAngle(startAngle)
+  , _endAngle(endAngle)
+  , _segments(segments)
+{
+  update();
+}
+
+//-----------------------------------------------------------------------------
+uint32_t ArcShape::getPointCount() const
+{
+  return _segments + 1;
+}
+
+//-----------------------------------------------------------------------------
+Vector2f ArcShape::getPoint(uint32_t idx) const
+{
+  if (idx == 0)
+    return _center;
+
+  // 0 degrees is up, ie (0,-1)
+  float angle = lerp(_startAngle, _endAngle, (float)(idx-1) / (_segments-1));
+  return _center + _radius * Vector2f(sinf(angle), -cosf(angle));
+}
+
+//-----------------------------------------------------------------------------
 // hue: 0-360°; sat: 0.f-1.f; val: 0.f-1.f
 Color bristol::ColorFromHsv(int hue, float sat, float val)
 {

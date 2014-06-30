@@ -21,18 +21,18 @@ include_directories(${SFML_INCLUDE_DIR})
 include_directories(${PROTOBUF_INCLUDE_DIR})
 
 set(SRC_MAIN
-  error.cpp file_utils.cpp string_utils.cpp utils.cpp
-  bristol.hpp error.hpp file_utils.hpp flags.hpp string_utils.hpp utils.hpp)
+  bristol/error.cpp bristol/file_utils.cpp bristol/string_utils.cpp bristol/utils.cpp
+  bristol/bristol.hpp bristol/error.hpp bristol/file_utils.hpp bristol/flags.hpp bristol/string_utils.hpp bristol/utils.hpp)
 
 set(SRC_DX
-  graphics_utils.cpp
-  graphics_utils.hpp vertex_types.hpp DirectXTK/SimpleMath.h DirectXTK/SimpleMath.inl)
+  bristol/dx/graphics_utils.cpp
+  bristol/dx/graphics_utils.hpp bristol/dx/vertex_types.hpp bristol/dx/DirectXTK/SimpleMath.h bristol/dx/DirectXTK/SimpleMath.inl)
   
 set(SRC_SFML
-  sfml/sfml_helpers.cpp sfml/sfml_math_utils.cpp sfml/standard_cursor.cpp
-  sfml/virtual_window.cpp sfml/virtual_window_manager.cpp sfml/window_event_manager.cpp
-  sfml/sfml_helpers.hpp sfml/sfml_math_utils.hpp sfml/standard_cursor.hpp
-  sfml/virtual_window.hpp sfml/virtual_window_manager.hpp sfml/window_event_manager.hpp
+  bristol/sfml/sfml_helpers.cpp bristol/sfml/sfml_math_utils.cpp bristol/sfml/standard_cursor.cpp
+  bristol/sfml/virtual_window.cpp bristol/sfml/virtual_window_manager.cpp bristol/sfml/window_event_manager.cpp
+  bristol/sfml/sfml_helpers.hpp bristol/sfml/sfml_math_utils.hpp bristol/sfml/standard_cursor.hpp
+  bristol/sfml/virtual_window.hpp bristol/sfml/virtual_window_manager.hpp bristol/sfml/window_event_manager.hpp
 )
 
 add_library(${LIBRARY_NAME_MAIN} STATIC ${SRC_MAIN})

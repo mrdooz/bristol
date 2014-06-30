@@ -173,5 +173,24 @@ namespace bristol
   float GaussianRand(float mean, float variance);
   std::string ToString(const char* format, ...);
   void DebugOutput(const char* fmt, ...);
+
+  template <typename T>
+  bool LoadProto(const char* filename, T* out)
+  {
+    FILE* f = fopen(filename, "rb");
+    if (!f)
+      return false;
+
+    fseek(f, 0, 2);
+    size_t s = ftell(f);
+    fseek(f, 0, 0);
+    string str;
+    str.resize(s);
+    fread((char*)str.c_str(), 1, s, f);
+    fclose(f);
+
+    return google::protobuf::TextFormat::ParseFromString(str, out);
+  }
+
 }
 

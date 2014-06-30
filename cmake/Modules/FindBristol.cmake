@@ -2,6 +2,7 @@
 
 # find the Bristol include directory
 find_path(BRISTOL_INCLUDE_DIR bristol.hpp
+          PATH_SUFFIXES bristol
           PATHS
           /projects/bristol/)
 

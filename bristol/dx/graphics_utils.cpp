@@ -1,5 +1,5 @@
 #include "graphics_utils.hpp"
-#include "utils.hpp"
+#include "../utils.hpp"
 
 using namespace DirectX::SimpleMath;
 namespace bristol
