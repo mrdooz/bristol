@@ -1,4 +1,5 @@
 #include "sfml_math_utils.hpp"
+#include <stdlib.h>
 
 using namespace std;
 using namespace sf;

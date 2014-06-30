@@ -7,6 +7,7 @@ namespace bristol
 {
   string to_string(char const * const format, ... ) 
   {
+#ifdef _WIN32
     va_list arg;
     va_start(arg, format);
 
@@ -17,8 +18,12 @@ namespace bristol
     va_end(arg);
 
     return string(buf);
+#else
+    return string();
+#endif
   }
 
+#ifdef _WIN32
   string wide_char_to_utf8(const WCHAR *str) {
     int len = wcslen(str);
     char *buf = (char *)_alloca(len*2 + 1);
@@ -46,7 +51,7 @@ namespace bristol
     *str = string(buf);
     return true;
   }
-
+#endif
   string trim(const string &str) 
   {
     int leading = 0, trailing = 0;
@@ -86,7 +91,7 @@ namespace bristol
 
     return true;
   }
-
+#ifdef _WIN32
   wstring utf8_to_wide(const char *str)
   {
     const int len = strlen(str);
@@ -101,6 +106,6 @@ namespace bristol
     }
     return res;
   }
-
+#endif
 }
 

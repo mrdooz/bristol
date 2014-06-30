@@ -1,5 +1,7 @@
 #pragma once
 #include <stdint.h>
+#include <vector>
+#include <sstream>
 #include "utils.hpp"
 
 namespace bristol

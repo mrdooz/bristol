@@ -2,7 +2,9 @@
 #include "utils.hpp"
 
 #include <sys/stat.h>
+#ifdef _WIN32
 #include <io.h>
+#endif
 
 using namespace std;
 
@@ -11,6 +13,7 @@ namespace bristol
   //------------------------------------------------------------------------------
   bool LoadFile(const char* filename, vector<char> *buf)
   {
+#ifdef _WIN32
     ScopedHandle h(CreateFileA(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL));
     if (!h)
       return false;
@@ -24,20 +27,31 @@ namespace bristol
         return false;
     }
     return true;
+#else
+    return false;
+#endif
   }
 
   //------------------------------------------------------------------------------
   bool FileExists(const char* filename)
   {
+#ifdef _WIN32
     struct _stat status;
     return _access(filename, 0) == 0 && _stat(filename, &status) == 0 && (status.st_mode & _S_IFREG);
+#else
+    return false;
+#endif
   }
 
   //------------------------------------------------------------------------------
   bool DirectoryExists(const char* name)
   {
+#ifdef _WIN32
     struct _stat status;
     return _access(name, 0) == 0 && _stat(name, &status) == 0 && (status.st_mode & _S_IFDIR);
+#else
+    return false;
+#endif
   }
 
   //------------------------------------------------------------------------------

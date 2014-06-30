@@ -111,7 +111,9 @@ void LogSinkConsole::Log(LogLevel level, const LogEntry& entry)
   }
 
   str += '\n';
+#ifdef _WIN32
   OutputDebugStringA(str.c_str());
+#endif
 }
 
 //-----------------------------------------------------------------------------

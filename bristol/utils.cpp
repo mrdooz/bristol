@@ -4,6 +4,7 @@ using namespace std;
 
 namespace bristol
 {
+  #ifdef _WIN32
   //------------------------------------------------------------------------------
   string ToString(const char* format, ...)
   {
@@ -55,7 +56,7 @@ namespace bristol
   {
     _cs.leave();
   }
-
+#endif
   //------------------------------------------------------------------------------
   float GaussianRand(float mean, float variance)
   {
@@ -73,6 +74,7 @@ namespace bristol
   //------------------------------------------------------------------------------
   void DebugOutput(const char* fmt, ...)
   {
+    #ifdef _WIN32
     va_list args;
     va_start(args, fmt);
 
@@ -82,6 +84,7 @@ namespace bristol
     vsprintf_s(buf, len, fmt, args);
     OutputDebugStringA(buf);
     va_end(args);
+    #endif
   }
 }
 

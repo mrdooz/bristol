@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <math.h>
 #include <SFML/System/Vector2.hpp>
 namespace bristol
 {

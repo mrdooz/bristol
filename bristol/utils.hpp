@@ -3,6 +3,7 @@
 #include <functional>
 #include <unordered_map>
 #include <string>
+#include <stdlib.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -10,6 +11,7 @@
 
 namespace bristol
 {
+  #ifdef _WIN32
   class CriticalSection
   {
   public:
@@ -44,7 +46,7 @@ namespace bristol
   private:
     HANDLE _handle;
   };
-
+#endif
   struct ScopedObj
   {
     typedef std::function<void()> Fn;
@@ -81,7 +83,7 @@ namespace bristol
   template<class T> 
   void AssocDelete(T* t)
   {
-    for (T::iterator it = t->begin(); it != t->end(); ++i)
+    for (typename T::iterator it = t->begin(); it != t->end(); ++it)
       delete it->second;
     t->clear();
   }
@@ -116,17 +118,17 @@ namespace bristol
 
   template<typename T>
   T min3(const T &a, const T &b, const T &c) {
-    return min(a, min(b, c));
+    return std::min(a, std::min(b, c));
   }
 
   template<typename T>
   T max3(const T &a, const T &b, const T &c) {
-    return max(a, max(b, c));
+    return std::max(a, std::max(b, c));
   }
 
   template<typename T>
   T max4(const T &a, const T &b, const T &c, const T &d) {
-    return max(a, max3(b, c, d));
+    return std::max(a, max3(b, c, d));
   }
 
 
@@ -140,7 +142,7 @@ namespace bristol
   template<typename Container, typename Key>
   bool contains(const Container &c, const Key key)
   {
-    Container::const_iterator it = c.find(key);
+    typename Container::const_iterator it = c.find(key);
     return it != c.end();
   }
 
@@ -151,17 +153,17 @@ namespace bristol
     return it != candidates.end() ? it->second : default_value;
   }
 
+  template <typename T, typename U>
+  T lerp(T a, T b, U v)
+  {
+    return (1-v) * a + v * b;
+  }
+
   template <typename T>
   T randf(T a, T b)
   {
     float t = (float)rand() / RAND_MAX;
     return lerp(a, b, t);
-  }
-
-  template <typename T, typename U>
-  T lerp(T a, T b, U v)
-  {
-    return (1-v) * a + v * b;
   }
 
   template <typename T>
@@ -174,6 +176,7 @@ namespace bristol
   std::string ToString(const char* format, ...);
   void DebugOutput(const char* fmt, ...);
 
+  #if 0
   template <typename T>
   bool LoadProto(const char* filename, T* out)
   {
@@ -184,13 +187,14 @@ namespace bristol
     fseek(f, 0, 2);
     size_t s = ftell(f);
     fseek(f, 0, 0);
-    string str;
+    std::string str;
     str.resize(s);
     fread((char*)str.c_str(), 1, s, f);
     fclose(f);
 
     return google::protobuf::TextFormat::ParseFromString(str, out);
   }
+  #endif
 
 }
 

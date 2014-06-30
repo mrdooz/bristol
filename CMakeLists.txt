@@ -3,8 +3,11 @@ cmake_minimum_required (VERSION 2.6)
 project (bristol)
 
 set(LIBRARY_NAME_MAIN bristol_main)
-set(LIBRARY_NAME_DX bristol_dx)
 set(LIBRARY_NAME_SFML bristol_sfml)
+
+if (MSVC)
+  set(LIBRARY_NAME_DX bristol_dx)
+endif()
 
 include(FindProtobuf)
 
@@ -24,9 +27,11 @@ set(SRC_MAIN
   bristol/error.cpp bristol/file_utils.cpp bristol/string_utils.cpp bristol/utils.cpp bristol/file_watcher.cpp
   bristol/bristol.hpp bristol/error.hpp bristol/file_utils.hpp bristol/flags.hpp bristol/string_utils.hpp bristol/utils.hpp bristol/file_watcher.hpp)
 
-set(SRC_DX
-  bristol/dx/graphics_utils.cpp
-  bristol/dx/graphics_utils.hpp bristol/dx/vertex_types.hpp bristol/dx/DirectXTK/SimpleMath.h bristol/dx/DirectXTK/SimpleMath.inl)
+if (MSVC)
+  set(SRC_DX
+    bristol/dx/graphics_utils.cpp
+    bristol/dx/graphics_utils.hpp bristol/dx/vertex_types.hpp bristol/dx/DirectXTK/SimpleMath.h bristol/dx/DirectXTK/SimpleMath.inl)
+endif()
   
 set(SRC_SFML
   bristol/sfml/sfml_helpers.cpp bristol/sfml/sfml_math_utils.cpp bristol/sfml/standard_cursor.cpp
@@ -36,8 +41,10 @@ set(SRC_SFML
 )
 
 add_library(${LIBRARY_NAME_MAIN} STATIC ${SRC_MAIN})
-add_library(${LIBRARY_NAME_DX} STATIC ${SRC_DX})
 add_library(${LIBRARY_NAME_SFML} STATIC ${SRC_SFML})
+if (MSVC)
+  add_library(${LIBRARY_NAME_DX} STATIC ${SRC_DX})
+endif()
 
 if (APPLE)
   # change c++ standard library to libc++ (llvm)
