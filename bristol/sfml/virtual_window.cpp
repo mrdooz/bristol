@@ -39,7 +39,7 @@ VirtualWindow::VirtualWindow(
 //-----------------------------------------------------------------------------
 bool VirtualWindow::Init()
 {
-  if (!_font.loadFromFile("gfx/wscsnrg.ttf"))
+  if (!_font.loadFromFile("gfx/04b_03b_.ttf"))
     return false;
 
   return true;
@@ -187,6 +187,18 @@ GridSplitter::GridSplitter(
   _bottomRight->SetPosition(Vector2f(0, 0));
   _sprites[3].setPosition(Vector2f(w, h));
   _sprites[3].setTexture(_bottomRight->GetTexture()->getTexture());
+}
+
+//-----------------------------------------------------------------------------
+bool GridSplitter::Init()
+{
+  for (VirtualWindow* w : _windows)
+  {
+    if (!w->Init())
+      return false;
+  }
+
+  return true;
 }
 
 //-----------------------------------------------------------------------------

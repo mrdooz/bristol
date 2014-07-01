@@ -25,7 +25,7 @@ namespace bristol
         WindowEventManager* eventManager);
     ~VirtualWindowManager();
 
-    void AddWindow(VirtualWindow* window);
+    bool AddWindow(VirtualWindow* window);
     bool Init();
 
     void Update();

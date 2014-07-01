@@ -96,6 +96,7 @@ namespace bristol
       const sf::Vector2f& ratio = sf::Vector2f(0.5f, 0.5f));
 
     virtual void Draw();
+    virtual bool Init();
 
   private:
     enum Pos { TopLeft, TopRight, BottomLeft, BottomRight };

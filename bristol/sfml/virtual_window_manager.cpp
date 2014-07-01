@@ -320,7 +320,7 @@ bool VirtualWindowManager::HandlerForFocusWindow(const Event& event)
 }
 
 //-----------------------------------------------------------------------------
-void VirtualWindowManager::AddWindow(VirtualWindow* window)
+bool VirtualWindowManager::AddWindow(VirtualWindow* window)
 {
   assert(!window->_windowManager);
   window->_windowManager = this;
@@ -330,6 +330,8 @@ void VirtualWindowManager::AddWindow(VirtualWindow* window)
     SetFocus(window);
 
   _windows.push_back(window);
+
+  return window->Init();
 }
 
 //-----------------------------------------------------------------------------
