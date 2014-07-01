@@ -34,6 +34,7 @@ namespace bristol
   class VirtualWindow
   {
     friend class VirtualWindowManager;
+    friend class GridSplitter;
   public:
 
     VirtualWindow(

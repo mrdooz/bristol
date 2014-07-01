@@ -174,17 +174,20 @@ GridSplitter::GridSplitter(
   _sprites[0].setTexture(_topLeft->GetTexture()->getTexture());
 
   _topRight->SetSize(Vector2f(rw, h));
-  _topRight->SetPosition(Vector2f(0, 0));
+//  _topRight->SetPosition(Vector2f(0, 0));
+  _topRight->SetPosition(Vector2f(w, 0));
   _sprites[1].setPosition(Vector2f(w, 0));
   _sprites[1].setTexture(_topRight->GetTexture()->getTexture());
 
   _bottomLeft->SetSize(Vector2f(w, rh));
-  _bottomLeft->SetPosition(Vector2f(0, 0));
+//  _bottomLeft->SetPosition(Vector2f(0, 0));
+  _bottomLeft->SetPosition(Vector2f(0, h));
   _sprites[2].setPosition(Vector2f(0, h));
   _sprites[2].setTexture(_bottomLeft->GetTexture()->getTexture());
 
   _bottomRight->SetSize(Vector2f(rw, rh));
-  _bottomRight->SetPosition(Vector2f(0, 0));
+//  _bottomRight->SetPosition(Vector2f(0, 0));
+  _bottomRight->SetPosition(Vector2f(w, h));
   _sprites[3].setPosition(Vector2f(w, h));
   _sprites[3].setTexture(_bottomRight->GetTexture()->getTexture());
 }
@@ -194,6 +197,7 @@ bool GridSplitter::Init()
 {
   for (VirtualWindow* w : _windows)
   {
+    w->_windowManager = _windowManager;
     if (!w->Init())
       return false;
   }
@@ -208,7 +212,9 @@ void GridSplitter::Draw()
 
   // render the windows to their render targets
   for (VirtualWindow* w : _windows)
+  {
     w->Draw();
+  }
 
   // render the splitter sprites
   for (const Sprite& s : _sprites)

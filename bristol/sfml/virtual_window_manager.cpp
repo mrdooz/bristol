@@ -243,7 +243,7 @@ bool VirtualWindowManager::OnMouseButtonPressed(const Event& event)
     }
   }
 
-  return false;
+  return GenericHandler(event);
 }
 
 //-----------------------------------------------------------------------------
