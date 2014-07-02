@@ -7,6 +7,13 @@ namespace bristol
 {
   string to_string(char const * const format, ... ) 
   {
+    static char buf[4*1024];
+    va_list arg;
+    va_start(arg, format);
+    vsprintf(buf, format, arg);
+    string res(buf);
+    va_end(arg);
+    return res;
 #ifdef _WIN32
     va_list arg;
     va_start(arg, format);
