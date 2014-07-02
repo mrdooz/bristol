@@ -91,4 +91,12 @@ namespace bristol
   {
     return sf::Color(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff, (col >> 24) & 0xff);
   }
+
+  void DrawRectOutline(
+    sf::RenderTarget& texture,
+    const sf::Vector2f& pos,
+    const sf::Vector2f& size,
+    const sf::Color& col,
+    int borderWidth);
+
 }
