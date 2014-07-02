@@ -17,10 +17,8 @@ VirtualWindow::VirtualWindow(
     const string& title,
     const Vector2f& pos,
     const Vector2f& size,
-    const std::shared_ptr<sf::RenderTexture>& texture,
     const WindowFlags& flags)
   : _windowManager(nullptr)
-  , _texture(texture)
   , _title(title)
   , _pos(pos)
   , _size(size)
@@ -32,8 +30,8 @@ VirtualWindow::VirtualWindow(
   , _resizing(false)
   , _windowFlags(flags)
 {
-  _texture->create((int)size.x, (int)size.y);
-  _sprite.setTexture(_texture->getTexture());
+  _texture.create((int)size.x, (int)size.y);
+  _sprite.setTexture(_texture.getTexture());
   _sprite.setPosition(pos);
 
   _defaultColor = Color(rand() % 255, rand() % 255, rand() % 255);
@@ -51,23 +49,23 @@ bool VirtualWindow::Init()
 //-----------------------------------------------------------------------------
 void VirtualWindow::Draw()
 {
-  _texture->clear();
+  _texture.clear();
 
   RectangleShape rect;
   rect.setPosition(_pos);
   rect.setSize(_size);
   rect.setFillColor(_defaultColor);
-  _texture->draw(rect);
+  _texture.draw(rect);
 
-  _texture->display();
+  _texture.display();
 }
 
 //-----------------------------------------------------------------------------
 void VirtualWindow::SetSize(const Vector2f& size)
 {
   _size = size;
-  _texture->create((int)size.x, (int)size.y);
-  _sprite.setTexture(_texture->getTexture(), true);
+  _texture.create((int)size.x, (int)size.y);
+  _sprite.setTexture(_texture.getTexture(), true);
 }
 
 //-----------------------------------------------------------------------------
@@ -76,14 +74,6 @@ void VirtualWindow::SetPosition(const Vector2f& pos)
   _pos = pos;
   _sprite.setPosition(pos);
 }
-
-//-----------------------------------------------------------------------------
-void VirtualWindow::SetRenderTexture(const std::shared_ptr<sf::RenderTexture>& texture)
-{
-  _texture = texture;
-  _sprite.setTexture(texture->getTexture(), true);
-}
-
 
 //-----------------------------------------------------------------------------
 void VirtualWindow::DrawBorder(RenderWindow* window)
@@ -154,88 +144,5 @@ uint32_t VirtualWindow::PointInsideBorder(const Vector2f& pos)
     mask |= BottomBorder;
 
   return mask;
-}
-
-//-----------------------------------------------------------------------------
-GridSplitter::GridSplitter(
-  VirtualWindow* topLeft,
-  VirtualWindow* topRight,
-  VirtualWindow* bottomLeft,
-  VirtualWindow* bottomRight,
-  const Vector2f& size,
-  const Vector2f& ratio)
-    : VirtualWindow("", Vector2f(0,0), size, std::make_shared<sf::RenderTexture>(), WindowFlags(WindowFlag::Resizable))
-    , _ratio(ratio)
-{
-  _windows[0] = topLeft;
-  _windows[1] = topRight;
-  _windows[2] = bottomLeft;
-  _windows[3] = bottomRight;
-
-
-  // set the initial position and size
-  float w = ratio.x * size.x;
-  float rw = size.x - w;
-  float h = ratio.y * size.y;
-  float rh = size.y - h;
-
-  _topLeft->SetSize(Vector2f(w, h));
-  _topLeft->SetPosition(Vector2f(0,0));
-  _sprites[0].setPosition(Vector2f(0, 0));
-  _sprites[0].setTexture(_topLeft->GetTexture()->getTexture());
-
-  _topRight->SetSize(Vector2f(rw, h));
-//  _topRight->SetPosition(Vector2f(0, 0));
-  _topRight->SetPosition(Vector2f(w, 0));
-  _sprites[1].setPosition(Vector2f(w, 0));
-  _sprites[1].setTexture(_topRight->GetTexture()->getTexture());
-
-  _bottomLeft->SetSize(Vector2f(w, rh));
-//  _bottomLeft->SetPosition(Vector2f(0, 0));
-  _bottomLeft->SetPosition(Vector2f(0, h));
-  _sprites[2].setPosition(Vector2f(0, h));
-  _sprites[2].setTexture(_bottomLeft->GetTexture()->getTexture());
-
-  _bottomRight->SetSize(Vector2f(rw, rh));
-//  _bottomRight->SetPosition(Vector2f(0, 0));
-  _bottomRight->SetPosition(Vector2f(w, h));
-  _sprites[3].setPosition(Vector2f(w, h));
-  _sprites[3].setTexture(_bottomRight->GetTexture()->getTexture());
-}
-
-//-----------------------------------------------------------------------------
-bool GridSplitter::Init()
-{
-  for (VirtualWindow* c : _windows)
-  {
-    _windowManager->AddWindow(c);
-    _windowManager->SetParent(this, c);
-    c->SetRenderTexture(_texture);
-  }
-
-  for (VirtualWindow* w : _windows)
-  {
-    w->_windowManager = _windowManager;
-  }
-
-  return true;
-}
-
-void GridSplitter::PreDraw()
-{
-  _texture->clear();
-  _sprite.setTexture(_texture->getTexture(), true);
-}
-
-void GridSplitter::PostDraw()
-{
-  _texture->display();
-}
-
-
-//-----------------------------------------------------------------------------
-void GridSplitter::Draw()
-{
-  _texture->draw(_sprite);
 }
 

@@ -40,14 +40,6 @@ namespace bristol
 
   private:
 
-    struct WindowNode
-    {
-      WindowNode(VirtualWindow* node) : node(node) {}
-      ~WindowNode();
-      VirtualWindow* node;
-      std::vector<WindowNode*> children;
-    };
-
     bool OnLostFocus(const sf::Event& event);
     bool OnResize(const sf::Event& event);
     bool OnMouseButtonPressed(const sf::Event& event);
@@ -60,7 +52,6 @@ namespace bristol
     void SetFocus(VirtualWindow* window);
 
     bool ResetMovingAndResizing();
-    void FlattenWindowGraph(WindowNode* cur, std::deque<WindowNode*>* out);
 
     typedef std::pair<uint32_t, fnEventHandler> HandlerPair;
     typedef std::map<VirtualWindow*, HandlerPair> HandlersByWindow;
@@ -82,12 +73,6 @@ namespace bristol
     VirtualWindow* _movingWindow;
     VirtualWindow* _resizingWindow;
     uint8_t _resizeFlags;
-
-
-    WindowNode* UnlinkNode(WindowNode* root, VirtualWindow* w, bool* isChild);
-    WindowNode* FindNode(WindowNode* root, VirtualWindow* w);
-
-    std::vector<WindowNode*> _windowGraph;
   };
 
 }
