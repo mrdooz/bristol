@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <map>
 #include <vector>
+#include <deque>
 #include <SFML/Window/Event.hpp>
 
 namespace sf
@@ -26,15 +27,26 @@ namespace bristol
     ~VirtualWindowManager();
 
     bool AddWindow(VirtualWindow* window);
+    // passing a null parent is valid
+    void SetParent(VirtualWindow* parent, VirtualWindow* child);
     bool Init();
 
     void Update();
+    void Draw();
 
     // The WindowManager will send the events to the appropriate Virtual Window
     uint32_t RegisterHandler(sf::Event::EventType event, VirtualWindow* window, const fnEventHandler& handler);
     void UnregisterHandler(uint32_t handle);
 
   private:
+
+    struct WindowNode
+    {
+      WindowNode(VirtualWindow* node) : node(node) {}
+      ~WindowNode();
+      VirtualWindow* node;
+      std::vector<WindowNode*> children;
+    };
 
     bool OnLostFocus(const sf::Event& event);
     bool OnResize(const sf::Event& event);
@@ -48,6 +60,7 @@ namespace bristol
     void SetFocus(VirtualWindow* window);
 
     bool ResetMovingAndResizing();
+    void FlattenWindowGraph(WindowNode* cur, std::deque<WindowNode*>* out);
 
     typedef std::pair<uint32_t, fnEventHandler> HandlerPair;
     typedef std::map<VirtualWindow*, HandlerPair> HandlersByWindow;
@@ -69,6 +82,12 @@ namespace bristol
     VirtualWindow* _movingWindow;
     VirtualWindow* _resizingWindow;
     uint8_t _resizeFlags;
+
+
+    WindowNode* UnlinkNode(WindowNode* root, VirtualWindow* w, bool* isChild);
+    WindowNode* FindNode(WindowNode* root, VirtualWindow* w);
+
+    std::vector<WindowNode*> _windowGraph;
   };
 
 }

@@ -5,6 +5,7 @@
 #include "standard_cursor.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <assert.h>
+#include <queue>
 #include "../utils.hpp"
 
 using namespace bristol;
@@ -331,6 +332,8 @@ bool VirtualWindowManager::AddWindow(VirtualWindow* window)
 
   _windows.push_back(window);
 
+  _windowGraph.push_back(new WindowNode(window));
+
   return window->Init();
 }
 
@@ -386,17 +389,135 @@ bool VirtualWindowManager::Init()
 //-----------------------------------------------------------------------------
 void VirtualWindowManager::Update()
 {
-  // Sort windows according to depth (smallest is drawn first)
-  sort(_windows.begin(), _windows.end(), [](const VirtualWindow* lhs, const VirtualWindow* rhs)
-  { 
-    return lhs->_depth < rhs->_depth;
+  for (VirtualWindow* w : _windows)
+    w->Update();
+}
+
+//-----------------------------------------------------------------------------
+void VirtualWindowManager::Draw()
+{
+  // Sort all the root windows according to depth
+  sort(_windowGraph.begin(), _windowGraph.end(), [](const WindowNode* lhs, const WindowNode* rhs)
+  {
+      return lhs->node->_depth < rhs->node->_depth;
   });
 
-  for (VirtualWindow* window : _windows)
+  deque<WindowNode*> nodeStack;
+
+  for (WindowNode* n : _windowGraph)
+    FlattenWindowGraph(n, &nodeStack);
+
+  for (WindowNode* n : nodeStack)
+    n->node->PreDraw();
+
+  for (WindowNode* n : nodeStack)
+    n->node->Draw();
+
+  for (WindowNode* n : nodeStack)
+    n->node->PostDraw();
+
+}
+
+//-----------------------------------------------------------------------------
+VirtualWindowManager::WindowNode::~WindowNode()
+{
+  SeqDelete(&children);
+}
+
+//-----------------------------------------------------------------------------
+void VirtualWindowManager::FlattenWindowGraph(WindowNode* cur, std::deque<WindowNode*>* out)
+{
+  out->push_back(cur);
+
+  for (WindowNode* n : cur->children)
   {
-    window->DrawBorder(_renderWindow);
-    if (!(window->_resizing || window->_moving))
-      window->Draw();
-    _renderWindow->draw(window->_sprite);
+    FlattenWindowGraph(n, out);
   }
 }
+
+//-----------------------------------------------------------------------------
+VirtualWindowManager::WindowNode* VirtualWindowManager::FindNode(WindowNode* root, VirtualWindow* w)
+{
+  if (root->node == w)
+    return root;
+
+  for (WindowNode* c : root->children)
+  {
+    if (WindowNode* n = FindNode(c, w))
+      return n;
+  }
+
+  return nullptr;
+}
+
+//-----------------------------------------------------------------------------
+VirtualWindowManager::WindowNode* VirtualWindowManager::UnlinkNode(WindowNode* root, VirtualWindow* w, bool* isChild)
+{
+  // check if the current node is the one we're looking for
+  if (root->node == w)
+  {
+    *isChild = true;
+    return root;
+  }
+
+  *isChild = false;
+
+  for (auto it = root->children.begin(); it != root->children.end(); )
+  {
+    bool res;
+    if (WindowNode* n = UnlinkNode(*it, w, &res))
+    {
+      if (res)
+      {
+        it = root->children.erase(it);
+      }
+      return n;
+    }
+    else
+    {
+      ++it;
+    }
+  }
+
+  return nullptr;
+}
+
+
+//-----------------------------------------------------------------------------
+void VirtualWindowManager::SetParent(VirtualWindow* parent, VirtualWindow* child)
+{
+  // remove the child from any existing nodes
+  WindowNode* childNode = nullptr;
+  for (auto it = _windowGraph.begin(); it != _windowGraph.end(); ++it)
+  {
+    WindowNode* n = *it;
+    // check if the node we want to unlink is a top level node
+    if (n->node == child)
+    {
+      childNode = n;
+      _windowGraph.erase(it);
+      break;
+    }
+
+    bool tmp;
+    if ((childNode = UnlinkNode(n, child, &tmp)))
+      break;
+  }
+
+  if (!childNode)
+    return;
+
+  WindowNode* parentNode = nullptr;
+  for (WindowNode* n : _windowGraph)
+  {
+    if ((parentNode = FindNode(n, parent)))
+      break;
+  }
+
+  if (!parentNode)
+    return;
+
+  parentNode->children.push_back(childNode);
+
+}
+

@@ -41,14 +41,17 @@ namespace bristol
         const std::string& title,
         const sf::Vector2f& pos,
         const sf::Vector2f& size,
+        const std::shared_ptr<sf::RenderTexture>& texture,
         const WindowFlags& flags = WindowFlags(WindowFlag::DefaultFlags));
     virtual ~VirtualWindow() {}
 
     // TODO: update with fixed time step. allow windows to specify frequency
     virtual void Update() {}
     virtual bool Init();
+    virtual void PreDraw() {}
+    virtual void PostDraw() {}
     virtual void Draw();
-    sf::RenderTexture* GetTexture() { return &_texture; }
+    sf::RenderTexture* GetTexture() { return _texture.get(); }
 
     bool PointInside(const sf::Vector2f& pos, bool includeBorder);
 
@@ -59,6 +62,7 @@ namespace bristol
 
     void SetPosition(const sf::Vector2f& pos);
     void SetSize(const sf::Vector2f& size);
+    void SetRenderTexture(const std::shared_ptr<sf::RenderTexture>& texture);
 
   protected:
 
@@ -67,7 +71,7 @@ namespace bristol
     VirtualWindowManager* _windowManager;
 
     sf::Sprite _sprite;
-    sf::RenderTexture _texture;
+    std::shared_ptr<sf::RenderTexture> _texture;
 
     sf::Font _font;
     sf::Color _defaultColor;
@@ -96,6 +100,8 @@ namespace bristol
       const sf::Vector2f& size,
       const sf::Vector2f& ratio = sf::Vector2f(0.5f, 0.5f));
 
+    virtual void PreDraw();
+    virtual void PostDraw();
     virtual void Draw();
     virtual bool Init();
 
