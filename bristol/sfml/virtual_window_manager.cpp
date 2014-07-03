@@ -117,7 +117,7 @@ bool VirtualWindowManager::OnMouseButtonReleased(const Event& event)
     }
   }
 
-  return false;
+  return GenericHandler(event);
 }
 
 //-----------------------------------------------------------------------------
@@ -203,8 +203,7 @@ bool VirtualWindowManager::OnMouseMove(const Event& event)
       StandardCursor::Set(StandardCursor::Type::Normal);
     }
   }
-
-  return false;
+  return GenericHandler(event);
 }
 
 //-----------------------------------------------------------------------------
