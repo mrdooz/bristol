@@ -44,7 +44,8 @@ namespace bristol
     bool OnResize(const sf::Event& event);
     bool OnMouseButtonPressed(const sf::Event& event);
     bool OnMouseButtonReleased(const sf::Event& event);
-    bool OnMouseMove(const sf::Event& event);
+    bool OnMouseMoved(const sf::Event& event);
+    bool OnMouseWheelMoved(const sf::Event& event);
     bool OnKeyReleased(const sf::Event& event);
 
     bool GenericHandler(const sf::Event& event);

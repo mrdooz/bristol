@@ -36,7 +36,8 @@ VirtualWindowManager::VirtualWindowManager(
 
   _eventManager->RegisterHandler(Event::MouseButtonPressed, bind(&VirtualWindowManager::OnMouseButtonPressed, this, _1));
   _eventManager->RegisterHandler(Event::MouseButtonReleased, bind(&VirtualWindowManager::OnMouseButtonReleased, this, _1));
-  _eventManager->RegisterHandler(Event::MouseMoved, bind(&VirtualWindowManager::OnMouseMove, this, _1));
+  _eventManager->RegisterHandler(Event::MouseMoved, bind(&VirtualWindowManager::OnMouseMoved, this, _1));
+  _eventManager->RegisterHandler(Event::MouseWheelMoved, bind(&VirtualWindowManager::GenericHandler, this, _1));
   _eventManager->RegisterHandler(Event::Resized, bind(&VirtualWindowManager::OnResize, this, _1));
 
   _eventManager->RegisterHandler(Event::TextEntered, bind(&VirtualWindowManager::HandlerForFocusWindow, this, _1));
@@ -121,7 +122,7 @@ bool VirtualWindowManager::OnMouseButtonReleased(const Event& event)
 }
 
 //-----------------------------------------------------------------------------
-bool VirtualWindowManager::OnMouseMove(const Event& event)
+bool VirtualWindowManager::OnMouseMoved(const Event& event)
 {
   Vector2f pos((float)event.mouseMove.x, (float)event.mouseMove.y);
 
