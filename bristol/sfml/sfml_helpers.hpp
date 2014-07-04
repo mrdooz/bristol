@@ -97,6 +97,7 @@ namespace bristol
     const sf::Vector2f& pos,
     const sf::Vector2f& size,
     const sf::Color& col,
-    int borderWidth);
+    int horizBorder,
+    int vertBorder = 1);
 
 }

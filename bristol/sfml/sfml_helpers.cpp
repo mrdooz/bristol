@@ -14,15 +14,19 @@ void bristol::DrawRectOutline(
     const Vector2f& pos,
     const Vector2f& size,
     const Color& col,
-    int borderWidth)
+    int horizBorder,
+    int vertBorder)
 {
+  if (vertBorder == -1)
+    vertBorder = horizBorder;
+
   RectangleShape rect;
   rect.setFillColor(col);
   rect.setPosition(pos);
   rect.setSize(size);
   texture.draw(rect);
 
-  Vector2f v((float)borderWidth, (float)borderWidth);
+  Vector2f v((float)vertBorder, (float)horizBorder);
   rect.setPosition(pos + v);
   rect.setSize(size - 2.0f * v);
   rect.setFillColor(Color(col.r / 2, col.g / 2, col.b / 2));
@@ -185,7 +189,7 @@ Vector2f ArcShape::getPoint(uint32_t idx) const
 }
 
 //-----------------------------------------------------------------------------
-// hue: 0-360°; sat: 0.f-1.f; val: 0.f-1.f
+// hue: 0-360ï¿½; sat: 0.f-1.f; val: 0.f-1.f
 Color bristol::ColorFromHsv(int hue, float sat, float val)
 {
   hue %= 360;
