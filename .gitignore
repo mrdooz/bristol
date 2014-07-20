@@ -3,6 +3,8 @@ Debug/
 Release/
 **/Debug_editor/*
 **/Relase_editor/*
+**/MinSizeRel/**
+**/RelWithDebInfo/**
 Distribution/
 _win32/_ReSharper.kumi/*
 ipch/

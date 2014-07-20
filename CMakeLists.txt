@@ -16,16 +16,14 @@ if (MSVC)
   set(SFML_STATIC_LIBRARIES TRUE)
 endif()
 find_package(SFML 2 REQUIRED system window graphics)
-find_package(Boost REQUIRED)
 find_package(Protobuf REQUIRED)
 
-include_directories(${Boost_INCLUDE_DIR})
 include_directories(${SFML_INCLUDE_DIR})
 include_directories(${PROTOBUF_INCLUDE_DIR})
 
 set(SRC_MAIN
-  bristol/error.cpp bristol/file_utils.cpp bristol/string_utils.cpp bristol/utils.cpp bristol/file_watcher.cpp
-  bristol/bristol.hpp bristol/error.hpp bristol/file_utils.hpp bristol/flags.hpp bristol/string_utils.hpp bristol/utils.hpp bristol/file_watcher.hpp)
+  bristol/error.cpp bristol/file_utils.cpp bristol/string_utils.cpp bristol/utils.cpp bristol/file_watcher.cpp bristol/time_utils.cpp
+  bristol/bristol.hpp bristol/error.hpp bristol/file_utils.hpp bristol/flags.hpp bristol/string_utils.hpp bristol/utils.hpp bristol/file_watcher.hpp bristol/time_utils.hpp)
 
 if (MSVC)
   set(SRC_DX

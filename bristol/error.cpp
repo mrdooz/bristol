@@ -1,15 +1,5 @@
 #include "error.hpp"
-#define BOOST_ALL_NO_LIB
-#include <boost/date_time/posix_time/ptime.hpp>
-#include <boost/date_time/posix_time/time_formatters.hpp>
-#include <boost/date_time/posix_time/posix_time_types.hpp>
-
-#ifdef _DEBUG
-#pragma comment(lib, "libboost_date_time-vc120-mt-sgd-1_55.lib")
-#else
-#pragma comment(lib, "libboost_date_time-vc120-mt-sg-1_55.lib")
-#endif
-
+#include <time.h>
 
 using namespace std;
 
@@ -75,9 +65,16 @@ void LogSinkFile::Log(LogLevel level, const LogEntry& entry)
   // create log prefix, with severity and time stamp
   static char levelPrefix[] = { '-', 'D', 'I', 'W', 'E' };
 
-  boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
-  string str = ToString("[%c] %s - ", levelPrefix[(int)level],
-    boost::posix_time::to_iso_extended_string(now).c_str());
+  time_t current_time;
+  struct tm * time_info;
+  char timeString[9];  // space for "HH:MM:SS\0"
+
+  time(&current_time);
+#pragma warning(suppress: 4996)
+  time_info = localtime(&current_time);
+
+  strftime(timeString, sizeof(timeString), "%H:%M:%S", time_info);
+  string str = ToString("[%c] %s - ", levelPrefix[(int)level], timeString);
 
   if (_file)
     fprintf(_file, "%s", str.c_str());

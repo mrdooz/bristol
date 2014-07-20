@@ -3,7 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <boost/date_time/posix_time/ptime.hpp>
+#include "time_utils.hpp"
 
 namespace bristol
 {
@@ -34,7 +34,7 @@ namespace bristol
       std::vector<std::pair<void*, cbFileChanged>> callbacks;
     };
 
-    boost::posix_time::ptime _lastTickTime;
+    TimeStamp _lastTickTime;
     std::vector<std::string> _paths;
     std::unordered_map<std::string, WatchedFile> _watchedFiles;
 

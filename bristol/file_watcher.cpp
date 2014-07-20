@@ -1,10 +1,8 @@
 #include "file_watcher.hpp"
 #include "file_utils.hpp"
-#include <boost/date_time/posix_time/posix_time_types.hpp>
 
 using namespace std;
 using namespace bristol;
-using namespace boost::posix_time;
 
 //------------------------------------------------------------------------------
 void FileWatcher::AddFileWatch(
@@ -50,8 +48,8 @@ void FileWatcher::RemoveFileWatch(const cbFileChanged &cb)
 //------------------------------------------------------------------------------
 void FileWatcher::Tick()
 {
-  ptime now = boost::posix_time::microsec_clock::local_time();
-  if (_lastTickTime.is_not_a_date_time() || (now - _lastTickTime) > seconds(1))
+  TimeStamp now = TimeStamp::Now();
+  if (!_lastTickTime.IsValid() || (now - _lastTickTime) > TimeDuration::Seconds(1))
   {
     for (auto& kv : _watchedFiles)
     {
