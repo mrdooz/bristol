@@ -7,7 +7,6 @@
 
 namespace bristol
 {
-
   class FileWatcher
   {
   public:
@@ -37,6 +36,5 @@ namespace bristol
     TimeStamp _lastTickTime;
     std::vector<std::string> _paths;
     std::unordered_map<std::string, WatchedFile> _watchedFiles;
-
   };
 }

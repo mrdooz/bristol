@@ -1,6 +1,5 @@
 #pragma once
 #include <stdint.h>
-#include <windows.h>
 
 namespace bristol
 {
@@ -9,9 +8,9 @@ namespace bristol
   class TimeStamp
   {
   public:
-    TimeStamp() { _timestamp.QuadPart = 0; }
+    TimeStamp() : _timestamp(0) { }
     static TimeStamp Now();
-    bool IsValid() const { return _timestamp.QuadPart > 0; }
+    bool IsValid() const { return _timestamp > 0; }
 
     friend TimeDuration operator-(const TimeStamp& lhs, const TimeStamp& rhs);
     friend TimeStamp operator+(const TimeStamp& lhs, const TimeDuration& rhs);
@@ -19,15 +18,17 @@ namespace bristol
     friend bool operator>(const TimeStamp& lhs, const TimeStamp& rhs);
 
   private:
-    TimeStamp(const uint64_t& t) { _timestamp.QuadPart = t; }
-    LARGE_INTEGER _timestamp;
+    TimeStamp(const uint64_t& t) { _timestamp = t; }
+
+    // The timestamp is in platform dependent ticks
+    uint64_t _timestamp;
   };
 
   class TimeDuration
   {
   public:
-    TimeDuration() { _timestamp.QuadPart = 0; }
-    TimeDuration(const uint64_t& t) { _timestamp.QuadPart = t; }
+    TimeDuration() { _timestamp = 0; }
+    TimeDuration(const uint64_t& t) { _timestamp = t; }
 
     static TimeDuration Seconds(uint64_t x);
     static TimeDuration Milliseconds(uint64_t x);
@@ -51,7 +52,7 @@ namespace bristol
     friend TimeStamp operator+(const TimeStamp& lhs, const TimeDuration& rhs);
   private:
 
-    LARGE_INTEGER _timestamp;
+    uint64_t _timestamp;
   };
 
 }
