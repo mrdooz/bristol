@@ -61,6 +61,9 @@ namespace bristol
     void SetPosition(const sf::Vector2f& pos);
     void SetSize(const sf::Vector2f& size);
 
+    const sf::Vector2f& GetPosition() const { return _pos; }
+    const sf::Vector2f& GetSize() const { return _size; }
+
   protected:
 
     void DrawBorder(sf::RenderWindow* window);

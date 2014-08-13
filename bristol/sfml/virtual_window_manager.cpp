@@ -81,7 +81,7 @@ bool VirtualWindowManager::OnKeyReleased(const Event& event)
   if (event.key.code == Keyboard::Escape)
     ResetMovingAndResizing();
 
-  return false;
+  return GenericHandler(event);
 }
 
 //-----------------------------------------------------------------------------
