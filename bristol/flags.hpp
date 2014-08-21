@@ -27,6 +27,13 @@ namespace bristol
       _value |= f;
     }
 
+    bool CheckAndSet(Enum f)
+    {
+      bool tmp = IsSet(f);
+      Set(f);
+      return tmp;
+    }
+
     void Toggle(Enum f)
     {
       _value ^= f;
@@ -35,6 +42,13 @@ namespace bristol
     void Clear(Enum f)
     {
       _value &= ~f;
+    }
+
+    bool CheckAndClear(Enum f)
+    {
+      bool tmp = IsSet(f);
+      Clear(f);
+      return tmp;
     }
 
     void Reset()
