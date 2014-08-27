@@ -51,24 +51,20 @@ namespace bristol
   };
 
   //-----------------------------------------------------------------------------
-  class LineShape : public sf::Shape
+  class LineStrip : public sf::Drawable
   {
   public:
+    LineStrip(float thickness, const sf::Color& color = sf::Color(255, 255, 255, 255));
 
-    LineShape(const sf::Vector2f& point1, const sf::Vector2f& point2, float thickness = 2);
-
-    void setThickness(float thickness);
-    float getThickness() const;
-    float getLength() const;
-
-    virtual unsigned int getPointCount() const;
-    virtual sf::Vector2f getPoint(unsigned int index) const;
+    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+    void addPoint(const sf::Vector2f& v);
+    void addPoint(const sf::Vector2f& v, const sf::Color& col);
 
   private:
-    sf::Vector2f m_direction; ///< Direction of the line
-    float m_thickness;    ///< Thickness of the line
+    std::vector<sf::Vertex> _points;
+    float _thickness;
+    sf::Color _color;
   };
-
 
   //-----------------------------------------------------------------------------
   struct HsvColor

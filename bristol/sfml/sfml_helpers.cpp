@@ -8,6 +8,15 @@ using namespace sf;
 using namespace bristol;
 using namespace std;
 
+namespace
+{
+  Vector2f Normalize(const Vector2f& v)
+  {
+    float len = sqrtf(v.x*v.x + v.y*v.y);
+    return 1/len * v;
+  }
+}
+
 //-----------------------------------------------------------------------------
 void bristol::DrawRectOutline(
     RenderTarget& texture,
@@ -103,57 +112,57 @@ Vector2f RoundedRectangleShape::getPoint(unsigned int index) const
 }
 
 //-----------------------------------------------------------------------------
-LineShape::LineShape(const Vector2f& point1, const Vector2f& point2, float thickness)
-  : m_direction(point2 - point1)
-  , m_thickness(thickness)
+LineStrip::LineStrip(float thickness, const sf::Color& color)
+    : _thickness(thickness),
+      _color(color)
 {
-  setPosition(point1);
-  update();
 }
 
 //-----------------------------------------------------------------------------
-void LineShape::setThickness(float thickness)
+void LineStrip::addPoint(const sf::Vector2f& v)
 {
-  m_thickness = thickness;
-  update();
+  _points.push_back(sf::Vertex(v, _color));
 }
 
 //-----------------------------------------------------------------------------
-float LineShape::getThickness() const
+void LineStrip::addPoint(const sf::Vector2f& v, const sf::Color& col)
 {
-  return m_thickness;
+  _points.push_back(sf::Vertex(v, col));
 }
 
 //-----------------------------------------------------------------------------
-float LineShape::getLength() const
+void LineStrip::draw(RenderTarget& target, sf::RenderStates states) const
 {
-  return std::sqrt(m_direction.x*m_direction.x+m_direction.y*m_direction.y);
-}
+  VertexArray verts(sf::Triangles);
 
-
-//-----------------------------------------------------------------------------
-unsigned int LineShape::getPointCount() const
-{
-  return 4;
-}
-
-//-----------------------------------------------------------------------------
-Vector2f LineShape::getPoint(unsigned int index) const
-{
-  Vector2f unitDirection = m_direction/getLength();
-  Vector2f unitPerpendicular(-unitDirection.y,unitDirection.x);
-
-  Vector2f offset = (m_thickness/2.f)*unitPerpendicular;
-
-  switch (index)
+  for (size_t i = 0; i < _points.size() - 1; ++i)
   {
-  default:
-  case 0: return offset;
-  case 1: return (m_direction + offset);
-  case 2: return (m_direction - offset);
-  case 3: return (-offset);
+    const sf::Vector2f& p0  = _points[i+0].position;
+    const sf::Vector2f& p1  = _points[i+1].position;
+    const sf::Color& c0     = _points[i+0].color;
+    const sf::Color& c1     = _points[i+1].color;
+
+    const sf::Vector2f& dir = Normalize(p1-p0);
+    sf::Vector2f normal(-dir.y, dir.x);
+    sf::Vector2f ofs = _thickness / 2 * normal;
+
+    sf::Vector2f v0 = p0 - ofs;
+    sf::Vector2f v1 = p1 - ofs;
+    sf::Vector2f v2 = p1 + ofs;
+    sf::Vector2f v3 = p0 + ofs;
+
+    verts.append(Vertex(v0, c0));
+    verts.append(Vertex(v1, c1));
+    verts.append(Vertex(v2, c1));
+
+    verts.append(Vertex(v0, c0));
+    verts.append(Vertex(v2, c1));
+    verts.append(Vertex(v3, c0));
   }
+
+  target.draw(verts, states);
 }
+
 
 //-----------------------------------------------------------------------------
 ArcShape::ArcShape(

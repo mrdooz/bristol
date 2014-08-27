@@ -127,6 +127,11 @@ namespace bristol
   }
 
   template<typename T>
+  T min4(const T &a, const T &b, const T &c, const T &d) {
+    return std::min(a, min3(b, c, d));
+  }
+
+  template<typename T>
   T max4(const T &a, const T &b, const T &c, const T &d) {
     return std::max(a, max3(b, c, d));
   }
