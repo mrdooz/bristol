@@ -133,6 +133,9 @@ void LineStrip::addPoint(const sf::Vector2f& v, const sf::Color& col)
 //-----------------------------------------------------------------------------
 void LineStrip::draw(RenderTarget& target, sf::RenderStates states) const
 {
+  if (_points.size() <= 1)
+    return;
+
   VertexArray verts(sf::Triangles);
 
   for (size_t i = 0; i < _points.size() - 1; ++i)
