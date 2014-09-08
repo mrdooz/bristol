@@ -6,6 +6,7 @@
 
 namespace bristol
 {
+  //----------------------------------------------------------------------------------
   enum class LogLevel
   {
     None,
@@ -15,12 +16,15 @@ namespace bristol
     Error,
   };
 
+  //----------------------------------------------------------------------------------
   struct LogEntry
   {
+    LogEntry() : naked(false) {}
     const char* file;
-    uint32_t line;
     std::string desc;
     std::vector<std::pair<std::string, std::string>> values;
+    uint32_t line;
+    bool naked;
   };
 
   //----------------------------------------------------------------------------------
@@ -74,7 +78,7 @@ namespace bristol
   //----------------------------------------------------------------------------------
   struct LogStream
   {
-    LogStream(LogLevel level, const char* file, uint32_t line);
+    LogStream(LogLevel level, const char* file, uint32_t line, bool naked);
     ~LogStream();
 
     void Append(const std::string& key, const std::string& value);
@@ -104,10 +108,17 @@ namespace bristol
     }
 
 #define LOG_INFO(x) \
-  bristol::LogStream GEN_NAME(s, __LINE__)(bristol::LogLevel::Info, __FILE__, __LINE__); GEN_NAME(s, __LINE__) << x
+  do { bristol::LogStream GEN_NAME(s, __LINE__)(bristol::LogLevel::Info, __FILE__, __LINE__, false); GEN_NAME(s, __LINE__) << x; } while (false);
 #define LOG_WARN(x) \
-  bristol::LogStream GEN_NAME(s, __LINE__)(bristol::LogLevel::Warning, __FILE__, __LINE__); GEN_NAME(s, __LINE__) << x
+  do { bristol::LogStream GEN_NAME(s, __LINE__)(bristol::LogLevel::Warning, __FILE__, __LINE__, false); GEN_NAME(s, __LINE__) << x; } while (false);
 #define LOG_ERROR(x)  \
-  bristol::LogStream GEN_NAME(s, __LINE__)(bristol::LogLevel::Error, __FILE__, __LINE__); GEN_NAME(s, __LINE__) << x
+  do { bristol::LogStream GEN_NAME(s, __LINE__)(bristol::LogLevel::Error, __FILE__, __LINE__, false); GEN_NAME(s, __LINE__) << x; } while (false);
+
+#define LOG_INFO_NAKED(x) \
+  do { bristol::LogStream GEN_NAME(s, __LINE__)(bristol::LogLevel::Info, __FILE__, __LINE__, true); GEN_NAME(s, __LINE__) << x; } while (false);
+#define LOG_WARN_NAKED(x) \
+  do { bristol::LogStream GEN_NAME(s, __LINE__)(bristol::LogLevel::Warning, __FILE__, __LINE__, true); GEN_NAME(s, __LINE__) << x; } while (false);
+#define LOG_ERROR_NAKED(x)  \
+  do { bristol::LogStream GEN_NAME(s, __LINE__)(bristol::LogLevel::Error, __FILE__, __LINE__, true); GEN_NAME(s, __LINE__) << x; } while (false);
 }
 

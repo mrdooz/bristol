@@ -38,7 +38,9 @@ TimeStamp TimeStamp::Now()
 {
   TimeStamp t;
   #ifdef _WIN32
-  QueryPerformanceCounter(&t._timestamp);
+  LARGE_INTEGER tmp;
+  QueryPerformanceCounter(&tmp);
+  t._timestamp = tmp.QuadPart;
   #else
   t._timestamp = mach_absolute_time();
   #endif
@@ -89,7 +91,7 @@ TimeDuration TimeDuration::Nanoseconds(uint64_t x)
 uint64_t TimeDuration::TotalSeconds() const
 {
 #ifdef _WIN32
-  return _timestamp.QuadPart / g_frequency.QuadPart;
+  return _timestamp / g_frequency.QuadPart;
 #else
   return _timestamp * g_timebaseInfo.numer / g_timebaseInfo.denom / 1e9;
 #endif
@@ -99,7 +101,7 @@ uint64_t TimeDuration::TotalSeconds() const
 uint64_t TimeDuration::TotalMicroseconds() const
 {
 #ifdef _WIN32
-  return (uint64_t)(1e3 * _timestamp.QuadPart / g_frequency.QuadPart);
+  return (uint64_t)(1e3 * _timestamp / g_frequency.QuadPart);
 #else
   return _timestamp * g_timebaseInfo.numer / g_timebaseInfo.denom / 1e6;
 #endif
@@ -109,7 +111,7 @@ uint64_t TimeDuration::TotalMicroseconds() const
 uint64_t TimeDuration::TotalMilliseconds() const
 {
 #ifdef _WIN32
-  return (uint64_t)(1e6 * _timestamp.QuadPart / g_frequency.QuadPart);
+  return (uint64_t)(1e6 * _timestamp / g_frequency.QuadPart);
 #else
   return _timestamp * g_timebaseInfo.numer / g_timebaseInfo.denom / 1e3;
 #endif
@@ -119,7 +121,7 @@ uint64_t TimeDuration::TotalMilliseconds() const
 uint64_t TimeDuration::TotalNanoseconds() const
 {
 #ifdef _WIN32
-  return (uint64_t)(1e9 * _timestamp.QuadPart / g_frequency.QuadPart);
+  return (uint64_t)(1e9 * _timestamp / g_frequency.QuadPart);
 #else
   return _timestamp * g_timebaseInfo.numer / g_timebaseInfo.denom;
 #endif

@@ -26,6 +26,18 @@ namespace bristol
     DirectX::SimpleMath::Vector3 normal;
   };
 
+  struct PosNormalColor
+  {
+    PosNormalColor() {}
+    PosNormalColor(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& normal, const DirectX::SimpleMath::Color& col) : pos(pos), normal(normal), col(col) {}
+    PosNormalColor(float x, float y, float z, float nx, float ny, float nz, float r, float g, float b, float a) : pos(x, y, z), normal(nx, ny, nz), col(r, g, b, a) {}
+    float operator[](int idx) const { return ((float*)&pos.x)[idx]; }
+    float& operator[](int idx) { return ((float*)&pos.x)[idx]; }
+    DirectX::SimpleMath::Vector3 pos;
+    DirectX::SimpleMath::Vector3 normal;
+    DirectX::SimpleMath::Color col;
+  };
+
   struct PosTangentSpace
   {
     PosTangentSpace() {}

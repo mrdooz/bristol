@@ -97,7 +97,9 @@ void LogSinkFile::Log(LogLevel level, const LogEntry& entry)
 void LogSinkConsole::Log(LogLevel level, const LogEntry& entry)
 {
   // create clickable console prefix
-  string str = ToString("%s(%d): %s", entry.file, entry.line, entry.desc.empty() ? "" : entry.desc.c_str());
+  string str = entry.naked 
+    ? entry.desc
+    : ToString("%s(%d): %s", entry.file, entry.line, entry.desc.empty() ? "" : entry.desc.c_str());
 
   const vector<pair<string, string>>& msg = entry.values;
   for (size_t i = 0; i < msg.size(); ++i)
@@ -130,11 +132,12 @@ void LogSinkApp::Log(LogLevel level, const LogEntry& entry)
 }
 
 //-----------------------------------------------------------------------------
-LogStream::LogStream(LogLevel level, const char* file, uint32_t line)
+LogStream::LogStream(LogLevel level, const char* file, uint32_t line, bool naked)
     : _level(level)
 {
   _entry.file = file;
   _entry.line = line;
+  _entry.naked = naked;
 }
 
 //-----------------------------------------------------------------------------

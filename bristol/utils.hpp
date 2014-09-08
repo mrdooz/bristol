@@ -161,7 +161,7 @@ namespace bristol
   template <typename T, typename U>
   T lerp(T a, T b, U v)
   {
-    return (1-v) * a + v * b;
+    return (T)((1-v) * a + v * b);
   }
 
   template <typename T>
