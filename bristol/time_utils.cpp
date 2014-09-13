@@ -63,7 +63,7 @@ TimeDuration TimeDuration::Milliseconds(uint64_t x)
 #ifdef _WIN32
   return TimeDuration((uint64_t)(x * g_frequency.QuadPart / 1e3));
 #else
-  return TimeDuration(x * 1e6 * g_timebaseInfo.denom / g_timebaseInfo.numer);
+  return TimeDuration(x * 1e3 * g_timebaseInfo.denom / g_timebaseInfo.numer);
 #endif
 }
 
@@ -73,7 +73,7 @@ TimeDuration TimeDuration::Microseconds(uint64_t x)
 #ifdef _WIN32
   return TimeDuration((uint64_t)(x * g_frequency.QuadPart / 1e6));
 #else
-  return TimeDuration(x * 1e3 * g_timebaseInfo.denom / g_timebaseInfo.numer);
+  return TimeDuration(x * 1e6 * g_timebaseInfo.denom / g_timebaseInfo.numer);
 #endif
 }
 
@@ -98,22 +98,22 @@ uint64_t TimeDuration::TotalSeconds() const
 }
 
 //------------------------------------------------------------------------------
-uint64_t TimeDuration::TotalMicroseconds() const
+uint64_t TimeDuration::TotalMilliseconds() const
 {
 #ifdef _WIN32
   return (uint64_t)(1e3 * _timestamp / g_frequency.QuadPart);
 #else
-  return _timestamp * g_timebaseInfo.numer / g_timebaseInfo.denom / 1e6;
+  return _timestamp * g_timebaseInfo.numer / g_timebaseInfo.denom / 1e3;
 #endif
 }
 
 //------------------------------------------------------------------------------
-uint64_t TimeDuration::TotalMilliseconds() const
+uint64_t TimeDuration::TotalMicroseconds() const
 {
 #ifdef _WIN32
   return (uint64_t)(1e6 * _timestamp / g_frequency.QuadPart);
 #else
-  return _timestamp * g_timebaseInfo.numer / g_timebaseInfo.denom / 1e3;
+  return _timestamp * g_timebaseInfo.numer / g_timebaseInfo.denom / 1e6;
 #endif
 }
 
