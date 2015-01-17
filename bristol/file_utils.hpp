@@ -8,4 +8,5 @@ namespace bristol
   bool FileExists(const char* filename);
   bool DirectoryExists(const char *name);
   time_t LastModification(const char* filename);
+  std::string PathJoin(const char* root, const char* child);
 }

@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "file_watcher.hpp"
 #include "file_utils.hpp"
 
@@ -5,7 +6,13 @@ using namespace std;
 using namespace bristol;
 
 //------------------------------------------------------------------------------
-void FileWatcher::AddFileWatch(
+FileWatcher::FileWatcher()
+    : _nextId(1)
+{
+}
+
+//------------------------------------------------------------------------------
+FileWatcher::WatchId FileWatcher::AddFileWatch(
     const string& filename,
     void* token,
     bool initialCallback,
@@ -13,17 +20,23 @@ void FileWatcher::AddFileWatch(
     const cbFileChanged &cb)
 {
   auto it = _watchedFiles.find(filename);
+  shared_ptr<WatchedFile> w;
   if (it == _watchedFiles.end())
   {
     // the watch isn't already present, so add it
-    WatchedFile w;
-    w.filename = filename;
-    w.lastModification = LastModification(filename.c_str());
-    it = _watchedFiles.insert(make_pair(filename, w)).first;
+    w = make_shared<WatchedFile>(WatchedFile{ filename, LastModification(filename.c_str()) });
+    _watchedFiles.insert(make_pair(filename, w));
+  }
+  else
+  {
+    w = it->second;
   }
 
-  it->second.callbacks.push_back(make_pair(token, cb));
+  WatchId id = _nextId++;
+  w->callbacks.push_back({token, cb, id});
+  _idToFile[id] = w;
 
+  // Check if we should invoke the callback directly
   if (initialCallback)
   {
     bool res = cb(filename, token);
@@ -31,19 +44,22 @@ void FileWatcher::AddFileWatch(
       *initialResult = res;
   }
 
+  return id;
 }
 
 //------------------------------------------------------------------------------
-void FileWatcher::RemoveFileWatch(const cbFileChanged &cb)
+void FileWatcher::RemoveFileWatch(WatchId id)
 {
-  //   for (auto i = begin(_watchedFiles); i != end(_watchedFiles); ++i)
-  //   {
-  //     auto &v = i->second;
-  //     v.erase(remove_if(begin(v), end(v), [&](const pair<cbFileChanged, void*> &x)
-  //       { return cb == x.first; }), end(v));
-  //   }
-}
+  auto it = _idToFile.find(id);
+  if (it == _idToFile.end())
+    return;
 
+  shared_ptr<WatchedFile>& w = it->second;
+  auto& callbacks = w->callbacks;
+  callbacks.erase(
+    std::remove_if(callbacks.begin(), callbacks.end(), [=](const CallbackContext& ctx) { return ctx.id == id; }), 
+    callbacks.end());
+}
 
 //------------------------------------------------------------------------------
 void FileWatcher::Tick()
@@ -54,20 +70,18 @@ void FileWatcher::Tick()
     for (auto& kv : _watchedFiles)
     {
       const string& filename = kv.first;
-      WatchedFile& f = kv.second;
+      shared_ptr<WatchedFile>& f = kv.second;
       time_t lastModification = LastModification(filename.c_str());
-      if (lastModification > f.lastModification)
+      if (lastModification > f->lastModification)
       {
-        // file has been modified, so call all the callback
-        for (const auto& p : f.callbacks)
+        // file has been modified, so call all the callbacks
+        for (const CallbackContext& ctx : f->callbacks)
         {
-          void* token = p.first;
-          const cbFileChanged& cb = p.second;
-          cb(filename, token);
+          ctx.cb(filename, ctx.token);
         }
-        f.lastModification = lastModification;
+
+        f->lastModification = lastModification;
       }
     }
-    //
   }
 }

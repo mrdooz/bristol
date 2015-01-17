@@ -11,6 +11,21 @@ using namespace std;
 namespace bristol
 {
   //------------------------------------------------------------------------------
+  string PathJoin(const char* root, const char* child)
+  {
+    string res(root);
+    if (res.size() > 0)
+    {
+      char ch = res.back();
+      if (ch != '\\' && ch != '/')
+        res.append("\\");
+    }
+
+    res.append(child);
+    return res;
+  }
+
+  //------------------------------------------------------------------------------
   bool LoadFile(const char* filename, vector<char> *buf)
   {
 #ifdef _WIN32
