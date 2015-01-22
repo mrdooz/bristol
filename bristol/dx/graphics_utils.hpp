@@ -5,10 +5,16 @@ namespace bristol
 {
   enum VertexFlags
   {
-    VF_POS    = 1 << 0,
-    VF_NORMAL = 1 << 1,
-    VF_UV     = 1 << 2,
-    VF_COLOR  = 1 << 3,
+    VF_POS            = 1 << 0,
+    VF_POS_XY         = 1 << 1,
+    VF_NORMAL         = 1 << 4,
+    VF_TEX2_0         = 1 << 7,
+    VF_TEX3_0         = 1 << 8,
+    VF_COLOR          = 1 << 10,
+    VF_COLOR_U32      = 1 << 11,
+
+    // flags specifying order
+    VF_ORDER_TEX_COL   = 1 << 16,
   };
 
   DirectX::SimpleMath::Vector3 GetRow(const DirectX::SimpleMath::Matrix& m, uint32_t row);
@@ -26,4 +32,13 @@ namespace bristol
   {
     return a.Dot(b);
   }
+
+  // (w,h) = backbuffer size
+  DirectX::SimpleMath::Vector3 ScreenToViewSpace(
+    const DirectX::SimpleMath::Matrix& proj,
+    uint32_t x,
+    uint32_t y,
+    int backbufferWidth,
+    int backbufferHeight);
+
 }

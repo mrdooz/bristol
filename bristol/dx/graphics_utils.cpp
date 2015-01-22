@@ -5,6 +5,15 @@ using namespace DirectX::SimpleMath;
 namespace bristol
 {
   //------------------------------------------------------------------------------
+  Vector3 ScreenToViewSpace(const Matrix& proj, uint32_t x, uint32_t y, int w, int h)
+  {
+    float xv = (2.0f * x / w - 1) / proj(0, 0);
+    float yv = (-2.0f * y / h + 1) / proj(1, 1);
+
+    return Vector3(xv, yv, 1);
+  }
+
+  //------------------------------------------------------------------------------
   float Raycast(const Vector3& center, float radius, const Vector3& o, const Vector3& d)
   {
     // ray -> sphere intersection

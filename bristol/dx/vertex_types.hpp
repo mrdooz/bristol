@@ -86,6 +86,15 @@ namespace bristol
     DirectX::SimpleMath::Vector2 tex;
   };
 
+  struct PosTex3
+  {
+    PosTex3() {}
+    PosTex3(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& tex) : pos(pos), tex(tex) {}
+    PosTex3(float x, float y, float z, float u, float v, float w) : pos(x, y, z), tex(u, v, w) {}
+    DirectX::SimpleMath::Vector3 pos;
+    DirectX::SimpleMath::Vector3 tex;
+  };
+
   struct PosColTex
   {
     PosColTex() {}
