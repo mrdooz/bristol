@@ -128,6 +128,13 @@ uint64_t TimeDuration::TotalNanoseconds() const
 }
 
 //------------------------------------------------------------------------------
+TimeStamp& TimeStamp::operator+=(const TimeDuration& rhs)
+{
+  _timestamp += rhs._timestamp;
+  return *this;
+}
+
+//------------------------------------------------------------------------------
 TimeStamp bristol::operator+(const TimeStamp& lhs, const TimeDuration& rhs)
 {
   return TimeStamp(lhs._timestamp + rhs._timestamp);

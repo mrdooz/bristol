@@ -14,6 +14,7 @@ namespace bristol
 
     friend TimeDuration operator-(const TimeStamp& lhs, const TimeStamp& rhs);
     friend TimeStamp operator+(const TimeStamp& lhs, const TimeDuration& rhs);
+    TimeStamp& operator+=(const TimeDuration& rhs);
 
     friend bool operator>(const TimeStamp& lhs, const TimeStamp& rhs);
 
@@ -26,6 +27,7 @@ namespace bristol
 
   class TimeDuration
   {
+    friend class TimeStamp;
   public:
     TimeDuration() { _timestamp = 0; }
     TimeDuration(const uint64_t& t) { _timestamp = t; }
