@@ -44,6 +44,12 @@ TimeStamp::TimeStamp()
 }
 
 //------------------------------------------------------------------------------
+TimeStamp::TimeStamp(const int64_t& t)
+  : _timestamp(t)
+{
+}
+
+//------------------------------------------------------------------------------
 bool TimeStamp::IsValid() const 
 { 
   return _timestamp > 0; 
@@ -71,15 +77,28 @@ TimeStamp& TimeStamp::operator+=(const TimeDuration& rhs)
 }
 
 //------------------------------------------------------------------------------
+TimeStamp& TimeStamp::operator-=(const TimeDuration& rhs)
+{
+  _timestamp = max(_timestamp - rhs._timestamp, 0);
+  return *this;
+}
+
+//------------------------------------------------------------------------------
 TimeStamp bristol::operator+(const TimeStamp& lhs, const TimeDuration& rhs)
 {
   return TimeStamp(lhs._timestamp + rhs._timestamp);
 }
 
 //------------------------------------------------------------------------------
+TimeStamp bristol::operator-(const TimeStamp& lhs, const TimeDuration& rhs)
+{
+  return TimeStamp(max(lhs._timestamp - rhs._timestamp, 0));
+}
+
+//------------------------------------------------------------------------------
 TimeDuration bristol::operator-(const TimeStamp& lhs, const TimeStamp& rhs)
 {
-  return TimeDuration(lhs._timestamp - rhs._timestamp);
+  return TimeDuration(max(lhs._timestamp - rhs._timestamp, 0));
 }
 
 //------------------------------------------------------------------------------
@@ -118,7 +137,7 @@ TimeDuration TimeDuration::Seconds(int64_t x)
 TimeDuration TimeDuration::Milliseconds(int64_t x)
 {
 #ifdef _WIN32
-  return TimeDuration((uint64_t)(x * g_frequency.QuadPart / 1e3));
+  return TimeDuration((int64_t)(x * g_frequency.QuadPart / 1e3));
 #else
   return TimeDuration(x * 1e3 * g_timebaseInfo.denom / g_timebaseInfo.numer);
 #endif
@@ -128,7 +147,7 @@ TimeDuration TimeDuration::Milliseconds(int64_t x)
 TimeDuration TimeDuration::Microseconds(int64_t x)
 {
 #ifdef _WIN32
-  return TimeDuration((uint64_t)(x * g_frequency.QuadPart / 1e6));
+  return TimeDuration((int64_t)(x * g_frequency.QuadPart / 1e6));
 #else
   return TimeDuration(x * 1e6 * g_timebaseInfo.denom / g_timebaseInfo.numer);
 #endif
@@ -138,7 +157,7 @@ TimeDuration TimeDuration::Microseconds(int64_t x)
 TimeDuration TimeDuration::Nanoseconds(int64_t x)
 {
 #ifdef _WIN32
-  return TimeDuration((uint64_t)(x * g_frequency.QuadPart / 1e9));
+  return TimeDuration((int64_t)(x * g_frequency.QuadPart / 1e9));
 #else
   return TimeDuration(x * g_timebaseInfo.denom / g_timebaseInfo.numer);
 #endif
@@ -187,7 +206,7 @@ int64_t TimeDuration::TotalNanoseconds() const
 //------------------------------------------------------------------------------
 TimeDuration bristol::operator-(const TimeDuration& lhs, const TimeDuration& rhs)
 {
-  return TimeDuration(lhs._timestamp - rhs._timestamp);
+  return TimeDuration(max(lhs._timestamp - rhs._timestamp, 0));
 }
 
 //------------------------------------------------------------------------------

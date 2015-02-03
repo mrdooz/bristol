@@ -13,16 +13,18 @@ namespace bristol
     bool IsValid() const;
 
     TimeStamp& operator+=(const TimeDuration& rhs);
+    TimeStamp& operator-=(const TimeDuration& rhs);
 
     friend bool operator>(const TimeStamp& lhs, const TimeStamp& rhs);
     friend TimeDuration operator-(const TimeStamp& lhs, const TimeStamp& rhs);
     friend TimeStamp operator+(const TimeStamp& lhs, const TimeDuration& rhs);
+    friend TimeStamp operator-(const TimeStamp& lhs, const TimeDuration& rhs);
 
   private:
-    TimeStamp(const uint64_t& t);
+    TimeStamp(const int64_t& t);
 
     // The timestamp is in platform dependent ticks
-    uint64_t _timestamp = 0;
+    int64_t _timestamp = 0;
   };
 
   class TimeDuration
@@ -51,6 +53,7 @@ namespace bristol
     friend TimeDuration operator-(const TimeDuration& lhs, const TimeDuration& rhs);
     friend TimeDuration operator+(const TimeDuration& lhs, const TimeDuration& rhs);
     friend TimeStamp operator+(const TimeStamp& lhs, const TimeDuration& rhs);
+    friend TimeStamp operator-(const TimeStamp& lhs, const TimeDuration& rhs);
   private:
     TimeDuration(const int64_t& t);
     int64_t _timestamp = 0;
