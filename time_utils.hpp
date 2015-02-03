@@ -8,39 +8,38 @@ namespace bristol
   class TimeStamp
   {
   public:
-    TimeStamp() : _timestamp(0) { }
+    TimeStamp();
     static TimeStamp Now();
-    bool IsValid() const { return _timestamp > 0; }
+    bool IsValid() const;
 
-    friend TimeDuration operator-(const TimeStamp& lhs, const TimeStamp& rhs);
-    friend TimeStamp operator+(const TimeStamp& lhs, const TimeDuration& rhs);
     TimeStamp& operator+=(const TimeDuration& rhs);
 
     friend bool operator>(const TimeStamp& lhs, const TimeStamp& rhs);
+    friend TimeDuration operator-(const TimeStamp& lhs, const TimeStamp& rhs);
+    friend TimeStamp operator+(const TimeStamp& lhs, const TimeDuration& rhs);
 
   private:
-    TimeStamp(const uint64_t& t) { _timestamp = t; }
+    TimeStamp(const uint64_t& t);
 
     // The timestamp is in platform dependent ticks
-    uint64_t _timestamp;
+    uint64_t _timestamp = 0;
   };
 
   class TimeDuration
   {
     friend class TimeStamp;
   public:
-    TimeDuration() { _timestamp = 0; }
-    TimeDuration(const uint64_t& t) { _timestamp = t; }
+    TimeDuration();
 
-    static TimeDuration Seconds(uint64_t x);
-    static TimeDuration Milliseconds(uint64_t x);
-    static TimeDuration Microseconds(uint64_t x);
-    static TimeDuration Nanoseconds(uint64_t x);
+    static TimeDuration Seconds(int64_t x);
+    static TimeDuration Milliseconds(int64_t x);
+    static TimeDuration Microseconds(int64_t x);
+    static TimeDuration Nanoseconds(int64_t x);
 
-    uint64_t TotalSeconds() const;
-    uint64_t TotalMicroseconds() const;
-    uint64_t TotalMilliseconds() const;
-    uint64_t TotalNanoseconds() const;
+    int64_t TotalSeconds() const;
+    int64_t TotalMicroseconds() const;
+    int64_t TotalMilliseconds() const;
+    int64_t TotalNanoseconds() const;
 
     friend bool operator<(const TimeDuration& lhs, const TimeDuration& rhs);
     friend bool operator<=(const TimeDuration& lhs, const TimeDuration& rhs);
@@ -53,8 +52,8 @@ namespace bristol
     friend TimeDuration operator+(const TimeDuration& lhs, const TimeDuration& rhs);
     friend TimeStamp operator+(const TimeStamp& lhs, const TimeDuration& rhs);
   private:
-
-    uint64_t _timestamp;
+    TimeDuration(const int64_t& t);
+    int64_t _timestamp = 0;
   };
 
 }
