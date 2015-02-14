@@ -1,5 +1,6 @@
 #pragma once
 #include "DirectXTK/SimpleMath.h"
+#include <dxgiformat.h>
 
 namespace bristol
 {
@@ -16,6 +17,9 @@ namespace bristol
     // flags specifying order
     VF_ORDER_TEX_COL   = 1 << 16,
   };
+
+  uint32_t VertexSizeFromFlags(uint32_t flags);
+  uint32_t IndexSizeFromFormat(DXGI_FORMAT format);
 
   DirectX::SimpleMath::Vector3 GetRow(const DirectX::SimpleMath::Matrix& m, uint32_t row);
 

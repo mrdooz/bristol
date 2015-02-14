@@ -42,6 +42,7 @@ namespace bristol
     int64_t TotalMicroseconds() const;
     int64_t TotalMilliseconds() const;
     int64_t TotalNanoseconds() const;
+    void Clamp();
 
     friend bool operator<(const TimeDuration& lhs, const TimeDuration& rhs);
     friend bool operator<=(const TimeDuration& lhs, const TimeDuration& rhs);
@@ -49,13 +50,15 @@ namespace bristol
     friend bool operator>(const TimeDuration& lhs, const TimeDuration& rhs);
     friend bool operator>=(const TimeDuration& lhs, const TimeDuration& rhs);
 
+    TimeDuration& operator+=(const TimeDuration& t);
+    TimeDuration& operator-=(const TimeDuration& t);
     friend TimeDuration operator-(const TimeStamp& lhs, const TimeStamp& rhs);
     friend TimeDuration operator-(const TimeDuration& lhs, const TimeDuration& rhs);
     friend TimeDuration operator+(const TimeDuration& lhs, const TimeDuration& rhs);
     friend TimeStamp operator+(const TimeStamp& lhs, const TimeDuration& rhs);
     friend TimeStamp operator-(const TimeStamp& lhs, const TimeDuration& rhs);
   private:
-    TimeDuration(const int64_t& t);
+    explicit TimeDuration(const int64_t& t);
     int64_t _timestamp = 0;
   };
 

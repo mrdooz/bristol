@@ -98,7 +98,7 @@ TimeStamp bristol::operator-(const TimeStamp& lhs, const TimeDuration& rhs)
 //------------------------------------------------------------------------------
 TimeDuration bristol::operator-(const TimeStamp& lhs, const TimeStamp& rhs)
 {
-  return TimeDuration(max(lhs._timestamp - rhs._timestamp, 0));
+  return TimeDuration(lhs._timestamp - rhs._timestamp);
 }
 
 //------------------------------------------------------------------------------
@@ -121,6 +121,12 @@ TimeDuration::TimeDuration()
 TimeDuration::TimeDuration(const int64_t& t)
 { 
   _timestamp = t;
+}
+
+//------------------------------------------------------------------------------
+void TimeDuration::Clamp()
+{
+  _timestamp = max(0, _timestamp);
 }
 
 //------------------------------------------------------------------------------
@@ -206,13 +212,27 @@ int64_t TimeDuration::TotalNanoseconds() const
 //------------------------------------------------------------------------------
 TimeDuration bristol::operator-(const TimeDuration& lhs, const TimeDuration& rhs)
 {
-  return TimeDuration(max(lhs._timestamp - rhs._timestamp, 0));
+  return TimeDuration(lhs._timestamp - rhs._timestamp);
 }
 
 //------------------------------------------------------------------------------
 TimeDuration bristol::operator+(const TimeDuration& lhs, const TimeDuration& rhs)
 {
   return TimeDuration(lhs._timestamp + rhs._timestamp);
+}
+
+//------------------------------------------------------------------------------
+TimeDuration& TimeDuration::operator+=(const TimeDuration& t)
+{
+  _timestamp += t._timestamp;
+  return *this;
+}
+
+//------------------------------------------------------------------------------
+TimeDuration& TimeDuration::operator-=(const TimeDuration& t)
+{
+  _timestamp -= t._timestamp;
+  return *this;
 }
 
 //------------------------------------------------------------------------------

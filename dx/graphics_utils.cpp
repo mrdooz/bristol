@@ -5,6 +5,30 @@ using namespace DirectX::SimpleMath;
 namespace bristol
 {
   //------------------------------------------------------------------------------
+  uint32_t VertexSizeFromFlags(uint32_t flags)
+  {
+    uint32_t size = 0;
+    if (flags & VF_POS) size += 12;
+    if (flags & VF_POS_XY) size += 8;
+    if (flags & VF_NORMAL) size += 12;
+    if (flags & VF_TEX2_0) size += 8;
+    if (flags & VF_TEX3_0) size += 12;
+    if (flags & VF_COLOR) size += 16;
+    if (flags & VF_COLOR_U32) size += 4;
+
+    return size;
+  }
+
+  //------------------------------------------------------------------------------
+  uint32_t IndexSizeFromFormat(DXGI_FORMAT format)
+  {
+    if (format == DXGI_FORMAT_R16_UINT) return 2;
+    if (format == DXGI_FORMAT_R32_UINT) return 4;
+    assert(!"Unsupported index buffer format");
+    return 0;
+  }
+
+  //------------------------------------------------------------------------------
   Vector3 ScreenToViewSpace(const Matrix& proj, uint32_t x, uint32_t y, int w, int h)
   {
     float xv = (2.0f * x / w - 1) / proj(0, 0);
