@@ -45,4 +45,17 @@ namespace bristol
     int backbufferWidth,
     int backbufferHeight);
 
+  //------------------------------------------------------------------------------
+  struct Spherical
+  {
+    float r;
+    // phi is angle around x axis, ccw, starting at 0 at the x-axis
+    // theta is angle around the z axis
+    float phi, theta;
+  };
+
+  //------------------------------------------------------------------------------
+  DirectX::SimpleMath::Vector3 FromSpherical(const Spherical& s);
+  Spherical ToSpherical(const DirectX::SimpleMath::Vector3& v);
+
 }
