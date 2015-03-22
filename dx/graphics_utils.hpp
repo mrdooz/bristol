@@ -58,4 +58,38 @@ namespace bristol
   DirectX::SimpleMath::Vector3 FromSpherical(const Spherical& s);
   Spherical ToSpherical(const DirectX::SimpleMath::Vector3& v);
 
+  //------------------------------------------------------------------------------
+  inline DirectX::SimpleMath::Vector3 Cross(const DirectX::SimpleMath::Vector3& a, const DirectX::SimpleMath::Vector3& b)
+  {
+    return DirectX::SimpleMath::Vector3(
+      (a.y * b.z) - (a.z * b.y),
+      (a.z * b.x) - (a.x * b.z),
+      (a.x * b.y) - (a.y * b.x));
+  }
+
+  //------------------------------------------------------------------------------
+  inline void Cross(
+    float ax, float ay, float az,
+    float bx, float by, float bz,
+    float* nx, float* ny, float* nz)
+  {
+    *nx = (ay * bz) - (az * by);
+    *ny = (az * bx) - (ax * bz);
+    *nz = (ax * by) - (ay * bx);
+  }
+
+  //------------------------------------------------------------------------------
+  inline void Normalize(float* x, float* y, float* z)
+  {
+    float xx = *x;
+    float yy = *y;
+    float zz = *z;
+
+    float recipLen = 1.f / sqrtf(xx*xx + yy*yy + zz*zz);
+    *x = xx * recipLen;
+    *y = yy * recipLen;
+    *z = zz * recipLen;
+  }
+
+
 }
