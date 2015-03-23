@@ -91,5 +91,6 @@ namespace bristol
     *z = zz * recipLen;
   }
 
-
+  //------------------------------------------------------------------------------
+  void ExtractPlanes(DirectX::SimpleMath::Plane* planes, const DirectX::SimpleMath::Matrix& mtx);
 }

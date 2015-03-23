@@ -91,4 +91,46 @@ namespace bristol
 
     return{ r, atan2f(v.z, v.x), acosf(v.y/r) };
   }
+
+  //------------------------------------------------------------------------------
+  // From http://gamedevs.org/uploads/fast-extraction-viewing-frustum-planes-from-world-view-projection-matrix.pdf
+  void ExtractPlanes(Plane* planes, const Matrix& mtx)
+  {
+    // Left clipping plane
+    planes[0].x = mtx._14 + mtx._11;
+    planes[0].y = mtx._24 + mtx._21;
+    planes[0].z = mtx._34 + mtx._31;
+    planes[0].w = mtx._44 + mtx._41;
+
+    // Right clipping plane
+    planes[1].x = mtx._14 - mtx._11;
+    planes[1].y = mtx._24 - mtx._21;
+    planes[1].z = mtx._34 - mtx._31;
+    planes[1].w = mtx._44 - mtx._41;
+
+    // Top clipping plane
+    planes[2].x = mtx._14 - mtx._12;
+    planes[2].y = mtx._24 - mtx._22;
+    planes[2].z = mtx._34 - mtx._32;
+    planes[2].w = mtx._44 - mtx._42;
+
+    // Bottom clipping plane
+    planes[3].x = mtx._14 + mtx._12;
+    planes[3].y = mtx._24 + mtx._22;
+    planes[3].z = mtx._34 + mtx._32;
+    planes[3].w = mtx._44 + mtx._42;
+
+    // Near clipping plane
+    planes[4].x = mtx._13;
+    planes[4].y = mtx._23;
+    planes[4].z = mtx._33;
+    planes[4].w = mtx._43;
+
+    // Far clipping plane
+    planes[5].x = mtx._14 - mtx._13;
+    planes[5].y = mtx._24 - mtx._23;
+    planes[5].z = mtx._34 - mtx._33;
+    planes[5].w = mtx._44 - mtx._43;
+  }
+
 }
