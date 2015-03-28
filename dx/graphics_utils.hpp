@@ -92,5 +92,28 @@ namespace bristol
   }
 
   //------------------------------------------------------------------------------
-  void ExtractPlanes(DirectX::SimpleMath::Plane* planes, const DirectX::SimpleMath::Matrix& mtx);
+  void ExtractPlanes(
+    const DirectX::SimpleMath::Matrix& mtx,
+    bool normalize,
+    DirectX::SimpleMath::Plane* planes);
+
+  //------------------------------------------------------------------------------
+  inline float DistanceToPoint(const DirectX::SimpleMath::Plane& plane, const DirectX::SimpleMath::Vector3& pt)
+  {
+    return plane.x * pt.x + plane.y * pt.y + plane.z * pt.z + plane.w;
+
+  }
+
+  //------------------------------------------------------------------------------
+  inline float Dot(const DirectX::SimpleMath::Plane& plane, const DirectX::SimpleMath::Vector3& pt)
+  {
+    // Note, this is just the dot product between the plane's normal and pt
+    return plane.x * pt.x + plane.y * pt.y + plane.z * pt.z;
+  }
+
+  //------------------------------------------------------------------------------
+  int ClipPolygonAgainstPlane(
+    int vertexCount, const DirectX::SimpleMath::Vector3* vertex,
+    const DirectX::SimpleMath::Plane& plane,
+    DirectX::SimpleMath::Vector3* result);
 }

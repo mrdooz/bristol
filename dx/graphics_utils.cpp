@@ -94,7 +94,7 @@ namespace bristol
 
   //------------------------------------------------------------------------------
   // From http://gamedevs.org/uploads/fast-extraction-viewing-frustum-planes-from-world-view-projection-matrix.pdf
-  void ExtractPlanes(Plane* planes, const Matrix& mtx)
+  void ExtractPlanes(const Matrix& mtx, bool normalize, Plane* planes)
   {
     // Left clipping plane
     planes[0].x = mtx._14 + mtx._11;
@@ -131,6 +131,103 @@ namespace bristol
     planes[5].y = mtx._24 - mtx._23;
     planes[5].z = mtx._34 - mtx._33;
     planes[5].w = mtx._44 - mtx._43;
+
+    if (normalize)
+    {
+      for (int i = 0; i < 6; ++i)
+        planes[i].Normalize();
+    }
   }
 
+  //------------------------------------------------------------------------------
+  int ClipPolygonAgainstPlane(int vertexCount, const Vector3* vertex, const Plane& plane, Vector3* result)
+  {
+    // from http://www.terathon.com/code/clipping.html
+    enum Side
+    {
+      polygonInterior = 1,
+      polygonBoundary = 0,
+      polygonExterior = -1
+    };
+
+    Side location[16];
+
+    const float boundaryEpsilon = 1.0e-3F;
+
+    int positive = 0;
+    int negative = 0;
+
+    for (int a = 0; a < vertexCount; a++)
+    {
+      float d = DistanceToPoint(plane, vertex[a]);
+      if (d > boundaryEpsilon)
+      {
+        location[a] = polygonInterior;
+        positive++;
+      }
+      else
+      {
+        if (d < -boundaryEpsilon)
+        {
+          location[a] = polygonExterior;
+          negative++;
+        }
+        else
+        {
+          location[a] = polygonBoundary;
+        }
+      }
+    }
+
+    if (negative == 0)
+    {
+      for (int a = 0; a < vertexCount; a++) result[a] = vertex[a];
+      return (vertexCount);
+    }
+    else if (positive == 0)
+    {
+      return (0);
+    }
+
+    int count = 0;
+    int previous = vertexCount - 1;
+    for (int index = 0; index < vertexCount; index++)
+    {
+      int loc = location[index];
+      if (loc == polygonExterior)
+      {
+        if (location[previous] == polygonInterior)
+        {
+          const Vector3& v1 = vertex[previous];
+          const Vector3& v2 = vertex[index];
+          Vector3 dv = v2 - v1;
+
+          float t = DistanceToPoint(plane, v2) / Dot(plane, dv);
+          result[count++] = v2 - dv * t;
+        }
+      }
+      else
+      {
+        const Vector3& v1 = vertex[index];
+        if ((loc == polygonInterior) && (location[previous] == polygonExterior))
+        {
+          const Vector3& v2 = vertex[previous];
+          Vector3 dv = v2 - v1;
+
+          float t = DistanceToPoint(plane, v2) / Dot(plane, dv);
+          result[count++] = v2 - dv * t;
+        }
+
+        result[count++] = v1;
+      }
+
+      previous = index;
+    }
+
+    return (count);
+  }
+
+
 }
+
+
