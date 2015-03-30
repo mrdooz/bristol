@@ -79,6 +79,15 @@ namespace bristol
   }
 
   //------------------------------------------------------------------------------
+  inline DirectX::SimpleMath::Vector3 Normalize(const DirectX::SimpleMath::Vector3& v)
+  {
+    float len = v.Length();
+    if (len == 0.f)
+      return DirectX::SimpleMath::Vector3(0,0,0);
+    return 1/len * v;
+  }
+
+  //------------------------------------------------------------------------------
   inline void Normalize(float* x, float* y, float* z)
   {
     float xx = *x;
