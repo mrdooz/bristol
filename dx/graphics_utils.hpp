@@ -1,6 +1,11 @@
 #pragma once
 #include "DirectXTK/SimpleMath.h"
-#include <dxgiformat.h>
+#pragma warning(push)
+#pragma warning(disable: 4005)
+#include <dxgi.h>
+#include <dxgidebug.h>
+#include <d3d11.h>
+#pragma warning(pop)
 
 namespace bristol
 {
@@ -15,11 +20,27 @@ namespace bristol
     VF_COLOR_U32      = 1 << 11,
 
     // flags specifying order
-    VF_ORDER_TEX_COL   = 1 << 16,
+    VF_ORDER_TEX_COL  = 1 << 16,
+    VF_ORDER_CUSTOM   = 1 << 17,
+  };
+
+  struct CD3D11_INPUT_ELEMENT_DESC : public D3D11_INPUT_ELEMENT_DESC
+  {
+    CD3D11_INPUT_ELEMENT_DESC(LPCSTR name, DXGI_FORMAT format)
+    {
+      SemanticName = name;
+      SemanticIndex = 0;
+      Format = format;
+      InputSlot = 0;
+      AlignedByteOffset = 0;
+      InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+      InstanceDataStepRate = 0;
+    }
   };
 
   uint32_t VertexSizeFromFlags(uint32_t flags);
   uint32_t IndexSizeFromFormat(DXGI_FORMAT format);
+  uint32_t SizeFromFormat(DXGI_FORMAT format);
 
   DirectX::SimpleMath::Vector3 GetRow(const DirectX::SimpleMath::Matrix& m, uint32_t row);
 
