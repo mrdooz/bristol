@@ -45,8 +45,11 @@ namespace bristol
 
     TimeStamp _lastTickTime;
     std::vector<std::string> _paths;
-    std::unordered_map<std::string, std::shared_ptr<WatchedFile>> _watchedFiles;
+    //std::unordered_map<std::string, std::shared_ptr<WatchedFile>> _watchedFiles;
+    std::vector<std::shared_ptr<WatchedFile>> _watchedFiles;
     std::unordered_map<WatchId, std::shared_ptr<WatchedFile>> _idToFile;
     uint32_t _nextId;
+
+    uint32_t _watchFileOfs = 0;
   };
 }

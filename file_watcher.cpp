@@ -19,18 +19,35 @@ FileWatcher::WatchId FileWatcher::AddFileWatch(
     bool* initialResult,
     const cbFileChanged &cb)
 {
-  auto it = _watchedFiles.find(filename);
   shared_ptr<WatchedFile> w;
-  if (it == _watchedFiles.end())
+  for (shared_ptr<WatchedFile>& f : _watchedFiles)
+  {
+    if (f->filename == filename)
+    {
+      w = f;
+      break;
+    }
+  }
+
+  if (!w)
   {
     // the watch isn't already present, so add it
     w = make_shared<WatchedFile>(WatchedFile{ filename, LastModification(filename.c_str()) });
-    _watchedFiles.insert(make_pair(filename, w));
+    _watchedFiles.push_back(w);
   }
-  else
-  {
-    w = it->second;
-  }
+
+  //auto it = _watchedFiles.find(filename);
+  //shared_ptr<WatchedFile> w;
+  //if (it == _watchedFiles.end())
+  //{
+  //  // the watch isn't already present, so add it
+  //  w = make_shared<WatchedFile>(WatchedFile{ filename, LastModification(filename.c_str()) });
+  //  _watchedFiles.insert(make_pair(filename, w));
+  //}
+  //else
+  //{
+  //  w = it->second;
+  //}
 
   WatchId id = _nextId++;
   w->callbacks.push_back({token, cb, id});
@@ -64,13 +81,16 @@ void FileWatcher::RemoveFileWatch(WatchId id)
 //------------------------------------------------------------------------------
 void FileWatcher::Tick()
 {
+  int MAX_FILES_PER_TICK = 3;
+
   TimeStamp now = TimeStamp::Now();
   if (!_lastTickTime.IsValid() || (now - _lastTickTime) > TimeDuration::Seconds(1))
   {
-    for (auto& kv : _watchedFiles)
+    int num = min((int)_watchedFiles.size(), MAX_FILES_PER_TICK);
+    for (int i = 0; i < num; ++i)
     {
-      const string& filename = kv.first;
-      shared_ptr<WatchedFile>& f = kv.second;
+      shared_ptr<WatchedFile>& f = _watchedFiles[(i+_watchFileOfs) % num];
+      const string& filename = f->filename;
       time_t lastModification = LastModification(filename.c_str());
       if (lastModification > f->lastModification)
       {
@@ -83,5 +103,6 @@ void FileWatcher::Tick()
         f->lastModification = lastModification;
       }
     }
+    _watchFileOfs += num;
   }
 }
