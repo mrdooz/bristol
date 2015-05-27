@@ -16,6 +16,9 @@ namespace bristol
     Error,
   };
 
+  typedef std::function<void (const char*, int, const char*)> fnLogCallback;
+  void SetLogCallback(const fnLogCallback& cb);
+
   //----------------------------------------------------------------------------------
   struct LogEntry
   {

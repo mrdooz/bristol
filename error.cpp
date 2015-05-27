@@ -9,6 +9,23 @@ namespace bristol
   std::vector<LogSink*> g_logSinks;
   LogLevel g_logLevel = LogLevel::None;
 
+  fnLogCallback g_logCallback;
+
+  //-----------------------------------------------------------------------------
+  void SetLogCallback(const fnLogCallback& cb)
+  {
+    g_logCallback = cb;
+  }
+
+  //-----------------------------------------------------------------------------
+  void InvokeLogCallback(const LogEntry& entry)
+  {
+    if (!g_logCallback)
+      return;
+
+    g_logCallback(entry.file, entry.line, entry.desc.c_str());
+  }
+
   //-----------------------------------------------------------------------------
   LogLevel GetLogLevel()
   {
@@ -121,6 +138,8 @@ void LogSinkApp::Log(LogLevel level, const LogEntry& entry)
   // only log entrys with a desc
   if (entry.desc.empty() || level == LogLevel::Debug)
     return;
+
+  InvokeLogCallback(entry);
 
   // TODO: add custom callback
 //   MessageType type = 
