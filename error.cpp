@@ -140,14 +140,6 @@ void LogSinkApp::Log(LogLevel level, const LogEntry& entry)
     return;
 
   InvokeLogCallback(entry);
-
-  // TODO: add custom callback
-//   MessageType type = 
-//     level == LogLevel::Info ? MessageType::Info :
-//     level == LogLevel::Warning ? MessageType::Warning :
-//     MessageType::Error;
-// 
-//   APP.AddMessage(type, entry.desc);
 }
 
 //-----------------------------------------------------------------------------
