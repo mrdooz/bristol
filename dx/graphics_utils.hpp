@@ -80,13 +80,13 @@ namespace bristol
   Spherical ToSpherical(const DirectX::SimpleMath::Vector3& v);
 
   //------------------------------------------------------------------------------
-  inline DirectX::SimpleMath::Vector3 Cross(const DirectX::SimpleMath::Vector3& a, const DirectX::SimpleMath::Vector3& b)
-  {
-    return DirectX::SimpleMath::Vector3(
-      (a.y * b.z) - (a.z * b.y),
-      (a.z * b.x) - (a.x * b.z),
-      (a.x * b.y) - (a.y * b.x));
-  }
+  //inline DirectX::SimpleMath::Vector3 Cross(const DirectX::SimpleMath::Vector3& a, const DirectX::SimpleMath::Vector3& b)
+  //{
+  //  return DirectX::SimpleMath::Vector3(
+  //    (a.y * b.z) - (a.z * b.y),
+  //    (a.z * b.x) - (a.x * b.z),
+  //    (a.x * b.y) - (a.y * b.x));
+  //}
 
   //------------------------------------------------------------------------------
   inline void Cross(
