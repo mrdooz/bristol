@@ -81,7 +81,7 @@ void FileWatcher::RemoveFileWatch(WatchId id)
 //------------------------------------------------------------------------------
 void FileWatcher::Tick()
 {
-  int MAX_FILES_PER_TICK = 3;
+  int MAX_FILES_PER_TICK = 100;
 
   TimeStamp now = TimeStamp::Now();
   if (!_lastTickTime.IsValid() || (now - _lastTickTime) > TimeDuration::Seconds(1))
