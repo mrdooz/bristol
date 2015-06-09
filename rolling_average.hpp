@@ -44,6 +44,25 @@ namespace bristol
       return m;
     }
 
+    void CopySamples(V* out, size_t* numSamples)
+    {
+      *numSamples = _samplesUsed;
+      if (_samplesUsed < _samples.size())
+      {
+        std::copy(_samples.begin(), _samples.begin() + _samplesUsed, out);
+      }
+      else
+      {
+        // copy from _nextSample to end
+        std::copy(_samples.begin() + _nextSample, _samples.end(), out);
+
+        // copy from begining to _nextSample - 1
+        std::copy(_samples.begin(), _samples.begin() + _nextSample, out + (_samplesUsed - _nextSample));
+      }
+    }
+
+    size_t IsPrimed() const { return _samplesUsed == _samples.size(); }
+
     std::vector<V> _samples;
     size_t _samplesUsed;
     size_t _nextSample;
