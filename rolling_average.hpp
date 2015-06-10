@@ -34,14 +34,21 @@ namespace bristol
       return _samplesUsed == 0 ? 0 : _sum / _samplesUsed;
     }
 
-    V GetPeak() const
+    void GetMinMax(V* minValue, V* maxValue) const
     {
-      V m = std::numeric_limits<V>::min();
+      V localMaxValue = std::numeric_limits<V>::min();
+      V localMinValue = std::numeric_limits<V>::max();
       for (size_t i = 0; i < _samplesUsed; ++i)
       {
-        m = max(m, _samples[i]);
+        localMaxValue = max(localMaxValue, _samples[i]);
+        localMinValue = min(localMinValue, _samples[i]);
       }
-      return m;
+
+      if (minValue)
+        *minValue = localMinValue;
+
+      if (maxValue)
+        *maxValue = localMaxValue;
     }
 
     void CopySamples(V* out, size_t* numSamples)
