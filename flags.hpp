@@ -16,6 +16,7 @@ namespace bristol
 
     Flags() : _value(0) {}
     explicit Flags(Enum f) : _value(f) {}
+    explicit Flags(int f) : _value(f) {}
 
     bool IsSet(Enum f) const
     {
@@ -54,6 +55,11 @@ namespace bristol
     void Reset()
     {
       _value = 0;
+    }
+
+    bool operator==(const Flags& rhs)
+    {
+      return _value == rhs._value;
     }
 
     Flags& operator|=(Enum f)

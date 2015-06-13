@@ -213,5 +213,21 @@ namespace bristol
   }
   #endif
 
+  struct ScopeGuard
+  {
+    typedef std::function<void()> Func;
+    ScopeGuard(const Func& fn) : fn(fn) {}
+    ~ScopeGuard()
+    {
+      if (!commit)
+        fn();
+    }
+
+    void Commit() const { commit = true; }
+
+    mutable bool commit = false;
+    Func fn;
+  };
+
 }
 
