@@ -32,6 +32,13 @@ namespace bristol
     CriticalSection &_cs;
   };
 
+  struct ScopedCriticalSection
+  {
+    ScopedCriticalSection(CRITICAL_SECTION* cs) : cs(cs) { EnterCriticalSection(cs); }
+    ~ScopedCriticalSection() { LeaveCriticalSection(cs); }
+    CRITICAL_SECTION* cs;
+  };
+
   class ScopedHandle
   {
   public:

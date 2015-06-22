@@ -15,8 +15,8 @@ namespace bristol
     typedef typename F::Bits Bits;
 
     Flags() : _value(0) {}
-    explicit Flags(Enum f) : _value(f) {}
-    explicit Flags(int f) : _value(f) {}
+    Flags(Enum f) : _value(f) {}
+    Flags(int f) : _value(f) {}
 
     bool IsSet(Enum f) const
     {
