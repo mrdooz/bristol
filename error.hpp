@@ -18,6 +18,7 @@ namespace bristol
 
   typedef std::function<void (const char*, int, const char*)> fnLogCallback;
   void SetLogCallback(const fnLogCallback& cb);
+  void SetBreakOnError(bool value);
 
   //----------------------------------------------------------------------------------
   struct LogEntry

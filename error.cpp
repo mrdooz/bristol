@@ -10,6 +10,14 @@ namespace bristol
   LogLevel g_logLevel = LogLevel::None;
 
   fnLogCallback g_logCallback;
+  bool g_breakOnError = true;
+
+
+  //-----------------------------------------------------------------------------
+  void SetBreakOnError(bool value)
+  {
+    g_breakOnError = value;
+  }
 
   //-----------------------------------------------------------------------------
   void SetLogCallback(const fnLogCallback& cb)
@@ -159,6 +167,12 @@ LogStream::~LogStream()
 
   for (LogSink* sink : g_logSinks)
     sink->Log(_level, _entry);
+
+  if (_level == LogLevel::Error && g_breakOnError)
+  {
+    DebugBreak();
+  }
+
 }
 
 //-----------------------------------------------------------------------------
