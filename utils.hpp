@@ -236,5 +236,11 @@ namespace bristol
     Func fn;
   };
 
+  template<typename T>
+  bool Inside(T value, T start, T end)
+  {
+    return value >= start && value < end;
+  }
+
 }
 
