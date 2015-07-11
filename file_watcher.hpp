@@ -11,7 +11,7 @@ namespace bristol
   class FileWatcher
   {
   public:
-    typedef std::function<bool(const std::string&, void *)> cbFileChanged;
+    typedef std::function<bool(const std::string&)> cbFileChanged;
     typedef uint32_t WatchId;
 
     FileWatcher();
@@ -19,7 +19,6 @@ namespace bristol
 
     WatchId AddFileWatch(
         const std::string& filename,
-        void* token,
         bool initialCallback,
         bool* initialResult,
         const cbFileChanged &cb);
@@ -30,7 +29,6 @@ namespace bristol
 
     struct CallbackContext
     {
-      void* token;
       cbFileChanged cb;
       WatchId id;
     };
@@ -45,7 +43,6 @@ namespace bristol
 
     TimeStamp _lastTickTime;
     std::vector<std::string> _paths;
-    //std::unordered_map<std::string, std::shared_ptr<WatchedFile>> _watchedFiles;
     std::vector<std::shared_ptr<WatchedFile>> _watchedFiles;
     std::unordered_map<WatchId, std::shared_ptr<WatchedFile>> _idToFile;
     uint32_t _nextId;

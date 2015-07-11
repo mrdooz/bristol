@@ -14,7 +14,6 @@ FileWatcher::FileWatcher()
 //------------------------------------------------------------------------------
 FileWatcher::WatchId FileWatcher::AddFileWatch(
     const string& filename,
-    void* token,
     bool initialCallback,
     bool* initialResult,
     const cbFileChanged &cb)
@@ -36,27 +35,14 @@ FileWatcher::WatchId FileWatcher::AddFileWatch(
     _watchedFiles.push_back(w);
   }
 
-  //auto it = _watchedFiles.find(filename);
-  //shared_ptr<WatchedFile> w;
-  //if (it == _watchedFiles.end())
-  //{
-  //  // the watch isn't already present, so add it
-  //  w = make_shared<WatchedFile>(WatchedFile{ filename, LastModification(filename.c_str()) });
-  //  _watchedFiles.insert(make_pair(filename, w));
-  //}
-  //else
-  //{
-  //  w = it->second;
-  //}
-
   WatchId id = _nextId++;
-  w->callbacks.push_back({token, cb, id});
+  w->callbacks.push_back({cb, id});
   _idToFile[id] = w;
 
   // Check if we should invoke the callback directly
   if (initialCallback)
   {
-    bool res = cb(filename, token);
+    bool res = cb(filename);
     if (initialResult)
       *initialResult = res;
   }
@@ -97,7 +83,7 @@ void FileWatcher::Tick()
         // file has been modified, so call all the callbacks
         for (const CallbackContext& ctx : f->callbacks)
         {
-          ctx.cb(filename, ctx.token);
+          ctx.cb(filename);
         }
 
         f->lastModification = lastModification;
