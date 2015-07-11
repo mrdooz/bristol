@@ -31,13 +31,13 @@ namespace bristol
 
 #ifdef _WIN32
   string wide_char_to_utf8(const WCHAR *str) {
-    int len = wcslen(str);
+    size_t len = wcslen(str);
     char *buf = (char *)_alloca(len*2 + 1);
-    int res;
-    if (!(res = WideCharToMultiByte(CP_UTF8, 0, str, len, buf, len * 2 + 1, NULL, NULL)))
+    size_t res = WideCharToMultiByte(CP_UTF8, 0, str, len, buf, len * 2 + 1, NULL, NULL);
+    if (res == 0)
       return false;
 
-    buf[len] = '\0';
+    buf[res] = '\0';
     return string(buf);
   }
 
@@ -48,11 +48,11 @@ namespace bristol
 
     char *buf = (char *)_alloca(len*2 + 1);
 
-    int res;
-    if (!(res = WideCharToMultiByte(CP_UTF8, 0, unicode, len, buf, len * 2 + 1, NULL, NULL)))
+    size_t res = WideCharToMultiByte(CP_UTF8, 0, unicode, len, buf, len * 2 + 1, NULL, NULL);
+    if (res == 0)
       return false;
 
-    buf[len] = '\0';
+    buf[res] = '\0';
 
     *str = string(buf);
     return true;
@@ -63,7 +63,7 @@ namespace bristol
     int leading = 0, trailing = 0;
     while (isspace((uint8_t)str[leading]))
       leading++;
-    const int end = str.size() - 1;
+    const size_t end = str.size() - 1;
     while (isspace((uint8_t)str[end - trailing]))
       trailing++;
 
@@ -100,7 +100,7 @@ namespace bristol
 #ifdef _WIN32
   wstring utf8_to_wide(const char *str)
   {
-    const int len = strlen(str);
+    const size_t len = strlen(str);
     WCHAR *buf = (WCHAR *)_alloca((len + 1) * 2);
 
     wstring res;
