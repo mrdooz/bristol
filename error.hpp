@@ -7,52 +7,39 @@
 namespace bristol
 {
   //----------------------------------------------------------------------------------
-  enum class LogLevel
+  enum LogLevel
   {
-    None,
-    Debug,
-    Info,
-    Warning,
-    Error,
+    LogLevelNone,
+    LogLevelDebug,
+    LogLevelInfo,
+    LogLevelWarning,
+    LogLevelError,
+  };
+
+  enum LogFlags
+  {
+    LogFlagsNaked   = 1 << 0,
   };
 
   typedef std::function<void (const char*, int, const char*)> fnLogCallback;
   void SetLogCallback(const fnLogCallback& cb);
   void SetBreakOnError(bool value);
 
-  //----------------------------------------------------------------------------------
   struct LogEntry
   {
-    LogEntry() : naked(false) {}
+    LogLevel level;
+    uint32_t flags;
     const char* file;
-    std::string desc;
-    std::vector<std::pair<std::string, std::string>> values;
     uint32_t line;
-    bool naked;
+    const char* msg;
   };
-
-  //----------------------------------------------------------------------------------
-  template <typename T>
-  struct LogObject
-  {
-    LogObject(const std::string& key, const T& value) : key(key), value(value) {}
-    std::string key;
-    T value;
-  };
-
-  //----------------------------------------------------------------------------------
-  template <typename T>
-  LogObject<T> LogKeyValue(const std::string& key, const T& value)
-  {
-    return LogObject<T>(key, value);
-  }
 
   //----------------------------------------------------------------------------------
   struct LogSink
   {
     LogSink();
     virtual ~LogSink();
-    virtual void Log(LogLevel level, const LogEntry& entry) = 0;
+    virtual void Log(const LogEntry& entry) = 0;
   };
 
   //----------------------------------------------------------------------------------
@@ -62,7 +49,7 @@ namespace bristol
     ~LogSinkFile();
 
     bool Open(const char* filename);
-    virtual void Log(LogLevel level, const LogEntry& entry);
+    virtual void Log(const LogEntry& entry) override;
 
     FILE* _file;
   };
@@ -70,59 +57,60 @@ namespace bristol
   //----------------------------------------------------------------------------------
   struct LogSinkConsole : public LogSink
   {
-    virtual void Log(LogLevel level, const LogEntry& entry);
+    virtual void Log(const LogEntry& entry) override;
   };
 
   //----------------------------------------------------------------------------------
   struct LogSinkApp : public LogSink
   {
-    virtual void Log(LogLevel level, const LogEntry& entry);
+    virtual void Log(const LogEntry& entry) override;
   };
 
   //----------------------------------------------------------------------------------
   struct LogStream
   {
-    LogStream(LogLevel level, const char* file, uint32_t line, bool naked);
+    LogStream(LogLevel level, const char* file, uint32_t line, uint32_t flags);
     ~LogStream();
 
-    void Append(const std::string& key, const std::string& value);
+    template <typename T>
+    void Log(const T& t)
+    {
+      std::ostringstream str;
+      str << t;
+      _curMessage.append(str.str());
+    }
 
-    LogEntry _entry;
+    template <typename T, typename... Args>
+    void Log(const T& head, Args... tail)
+    {
+      Log(head);
+      Log(tail...);
+    }
+
+    std::string _curMessage;
     LogLevel _level;
+    const char* _file;
+    uint32_t _line;
+    uint32_t _flags;
   };
-
-  template <typename T>
-  LogStream& operator<<(LogStream& s, const LogObject<T>& lhs)
-  {
-    std::ostringstream str;
-    str << lhs.value;
-    s.Append(lhs.key, str.str());
-    return s;
-  }
-
-  LogStream& operator<<(LogStream& s, const char* desc);
 
   // The minimum level at which we log
   LogLevel GetLogLevel();
   void SetLogLevel(LogLevel level);
 
-#define LOG_DEBUG(x)  \
-    if (GetLogLevel() <= bristol::LogLevel::Debug) {  \
-      bristol::LogStream GEN_NAME(s, __LINE__)(bristol::LogLevel::Debug, __FILE__, __LINE__); GEN_NAME(s, __LINE__) << x  \
-    }
+#define LOG_DEBUG(...)  \
+  bristol::LogStream (bristol::LogLevelDebug, __FILE__, __LINE__, 0).Log(__VA_ARGS__);
+#define LOG_INFO(...) \
+  bristol::LogStream(bristol::LogLevelInfo, __FILE__, __LINE__, 0).Log(__VA_ARGS__);
+#define LOG_WARN(...) \
+  bristol::LogStream(bristol::LogLevelWarning, __FILE__, __LINE__, 0).Log(__VA_ARGS__);
+#define LOG_ERROR(...)  \
+  bristol::LogStream(bristol::LogLevelError, __FILE__, __LINE__, 0).Log(__VA_ARGS__);
 
-#define LOG_INFO(x) \
-  do { bristol::LogStream GEN_NAME(s, __LINE__)(bristol::LogLevel::Info, __FILE__, __LINE__, false); GEN_NAME(s, __LINE__) << x; } while (false);
-#define LOG_WARN(x) \
-  do { bristol::LogStream GEN_NAME(s, __LINE__)(bristol::LogLevel::Warning, __FILE__, __LINE__, false); GEN_NAME(s, __LINE__) << x; } while (false);
-#define LOG_ERROR(x)  \
-  do { bristol::LogStream GEN_NAME(s, __LINE__)(bristol::LogLevel::Error, __FILE__, __LINE__, false); GEN_NAME(s, __LINE__) << x; } while (false);
-
-#define LOG_INFO_NAKED(x) \
-  do { bristol::LogStream GEN_NAME(s, __LINE__)(bristol::LogLevel::Info, __FILE__, __LINE__, true); GEN_NAME(s, __LINE__) << x; } while (false);
-#define LOG_WARN_NAKED(x) \
-  do { bristol::LogStream GEN_NAME(s, __LINE__)(bristol::LogLevel::Warning, __FILE__, __LINE__, true); GEN_NAME(s, __LINE__) << x; } while (false);
-#define LOG_ERROR_NAKED(x)  \
-  do { bristol::LogStream GEN_NAME(s, __LINE__)(bristol::LogLevel::Error, __FILE__, __LINE__, true); GEN_NAME(s, __LINE__) << x; } while (false);
+#define LOG_INFO_NAKED(...) \
+  bristol::LogStream(bristol::LogLevelInfo, __FILE__, __LINE__, LogFlagsNaked).Log(__VA_ARGS__);
+#define LOG_WARN_NAKED(...) \
+  bristol::LogStream(bristol::LogLevelWarning, __FILE__, __LINE__, LogFlagsNaked).Log(__VA_ARGS__);
+#define LOG_ERROR_NAKED(...)  \
+  bristol::LogStream(bristol::LogLevelError, __FILE__, __LINE__, LogFlagsNaked).Log(__VA_ARGS__);
 }
-
