@@ -21,7 +21,8 @@ namespace bristol
     LogFlagsNaked   = 1 << 0,
   };
 
-  typedef std::function<void (const char*, int, const char*)> fnLogCallback;
+  struct LogEntry;
+  typedef std::function<void (const LogEntry& entry)> fnLogCallback;
   void SetLogCallback(const fnLogCallback& cb);
   void SetBreakOnError(bool value);
 

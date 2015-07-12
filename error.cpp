@@ -120,11 +120,9 @@ void LogSinkConsole::Log(const LogEntry& entry)
 //-----------------------------------------------------------------------------
 void LogSinkApp::Log(const LogEntry& entry)
 {
-  // only log entrys with a desc
-  if (!g_logCallback || entry.level < LogLevelDebug)
-    return;
-
-  g_logCallback(entry.file, entry.line, entry.msg);
+  // NOTE: this is probably a bad way to propagate logs. A better way would just
+  // be to create a custom LogSink
+  g_logCallback(entry);
 }
 
 //-----------------------------------------------------------------------------
