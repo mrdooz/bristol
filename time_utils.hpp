@@ -12,6 +12,12 @@ namespace bristol
     static TimeStamp Now();
     bool IsValid() const;
 
+    int64_t TotalSeconds() const;
+    int64_t TotalMilliseconds() const;
+    int64_t TotalMicroseconds() const;
+    int64_t TotalNanoseconds() const;
+
+
     TimeStamp& operator+=(const TimeDuration& rhs);
     TimeStamp& operator-=(const TimeDuration& rhs);
 

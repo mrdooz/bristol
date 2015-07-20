@@ -108,6 +108,46 @@ bool bristol::operator>(const TimeStamp& lhs, const TimeStamp& rhs)
 }
 
 //------------------------------------------------------------------------------
+int64_t TimeStamp::TotalSeconds() const
+{
+#ifdef _WIN32
+  return _timestamp / g_frequency.QuadPart;
+#else
+  return _timestamp * g_timebaseInfo.numer / g_timebaseInfo.denom / 1e9;
+#endif
+}
+
+//------------------------------------------------------------------------------
+int64_t TimeStamp::TotalMilliseconds() const
+{
+#ifdef _WIN32
+  return (int64_t)(1e3 * _timestamp / g_frequency.QuadPart);
+#else
+  return _timestamp * g_timebaseInfo.numer / g_timebaseInfo.denom / 1e3;
+#endif
+}
+
+//------------------------------------------------------------------------------
+int64_t TimeStamp::TotalMicroseconds() const
+{
+#ifdef _WIN32
+  return (int64_t)(1e6 * _timestamp / g_frequency.QuadPart);
+#else
+  return _timestamp * g_timebaseInfo.numer / g_timebaseInfo.denom / 1e6;
+#endif
+}
+
+//------------------------------------------------------------------------------
+int64_t TimeStamp::TotalNanoseconds() const
+{
+#ifdef _WIN32
+  return (int64_t)(1e9 * _timestamp / g_frequency.QuadPart);
+#else
+  return _timestamp * g_timebaseInfo.numer / g_timebaseInfo.denom;
+#endif
+}
+
+//------------------------------------------------------------------------------
 //
 // TimeDuration
 //
