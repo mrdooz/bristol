@@ -48,6 +48,9 @@ namespace bristol
     int64_t TotalMicroseconds() const;
     int64_t TotalMilliseconds() const;
     int64_t TotalNanoseconds() const;
+
+    float TotalSecondsAsFloat() const;
+
     void Clamp();
 
     friend bool operator<(const TimeDuration& lhs, const TimeDuration& rhs);

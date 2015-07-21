@@ -230,6 +230,12 @@ int64_t TimeDuration::TotalMilliseconds() const
 }
 
 //------------------------------------------------------------------------------
+float TimeDuration::TotalSecondsAsFloat() const
+{
+  return TotalMicroseconds() / 1e6f;
+}
+
+//------------------------------------------------------------------------------
 int64_t TimeDuration::TotalMicroseconds() const
 {
 #ifdef _WIN32
