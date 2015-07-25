@@ -103,6 +103,10 @@ namespace bristol
     float yy = *y;
     float zz = *z;
 
+    float len = sqrtf(xx*xx + yy*yy + zz*zz);
+    if (len == 0)
+      return;
+
     float recipLen = 1.f / sqrtf(xx*xx + yy*yy + zz*zz);
     *x = xx * recipLen;
     *y = yy * recipLen;
