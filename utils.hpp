@@ -95,6 +95,14 @@ namespace bristol
     t->clear();
   }
 
+  template <typename T>
+  void Append(const std::vector<T>& src, std::vector<T>* dst)
+  {
+    size_t oldSize = dst->size();
+    dst->resize(dst->size() + src.size());
+    std::copy(src.begin(), src.end(), dst->begin() + oldSize);
+  }
+
   template<class T>
   void ReleaseObj(T t)
   {
