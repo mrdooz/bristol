@@ -250,5 +250,14 @@ namespace bristol
     return value >= start && value < end;
   }
 
+  template <typename T>
+  void Range(T* dst, T start, T end, T step = (T)1)
+  {
+    int idx = 0;
+    for (T i = start; i < end; i += step)
+    {
+      dst[idx++] = i;
+    }
+  }
 }
 
