@@ -51,7 +51,8 @@ namespace bristol
 
     float TotalSecondsAsFloat() const;
 
-    void Clamp();
+    void Clamp(int64_t value = 0);
+    int64_t GetTimestamp() const { return _timestamp; }
 
     friend bool operator<(const TimeDuration& lhs, const TimeDuration& rhs);
     friend bool operator<=(const TimeDuration& lhs, const TimeDuration& rhs);

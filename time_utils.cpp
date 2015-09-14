@@ -164,9 +164,9 @@ TimeDuration::TimeDuration(const int64_t& t)
 }
 
 //------------------------------------------------------------------------------
-void TimeDuration::Clamp()
+void TimeDuration::Clamp(int64_t value)
 {
-  _timestamp = max(0, _timestamp);
+  _timestamp = max(value, _timestamp);
 }
 
 //------------------------------------------------------------------------------
