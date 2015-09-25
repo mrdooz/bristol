@@ -134,8 +134,4 @@ namespace bristol
   }
 
   //------------------------------------------------------------------------------
-  int ClipPolygonAgainstPlane(
-    int vertexCount, const DirectX::SimpleMath::Vector3* vertex,
-    const DirectX::SimpleMath::Plane& plane,
-    DirectX::SimpleMath::Vector3* result);
 }

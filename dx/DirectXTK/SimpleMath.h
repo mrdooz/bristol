@@ -692,30 +692,30 @@ namespace std
 
     template<> struct less<DirectX::SimpleMath::Vector2>
     {
-        bool operator()(const DirectX::SimpleMath::Vector2& V1, const DirectX::SimpleMath::Vector2& V2) const
+        bool operator()(const DirectX::SimpleMath::Vector2& V1, const DirectX::SimpleMath::Vector2& vec2) const
         {
-            return ( (V1.x < V2.x) || ((V1.x == V2.x) && (V1.y < V2.y)) );
+            return ( (V1.x < vec2.x) || ((V1.x == vec2.x) && (V1.y < vec2.y)) );
         }
     };
 
     template<> struct less<DirectX::SimpleMath::Vector3>
     {
-        bool operator()(const DirectX::SimpleMath::Vector3& V1, const DirectX::SimpleMath::Vector3& V2) const
+        bool operator()(const DirectX::SimpleMath::Vector3& V1, const DirectX::SimpleMath::Vector3& vec2) const
         {
-            return ( (V1.x < V2.x)
-                     || ((V1.x == V2.x) && (V1.y < V2.y))
-                     || ((V1.x == V2.x) && (V1.y == V2.y) && (V1.z < V2.z)) );
+            return ( (V1.x < vec2.x)
+                     || ((V1.x == vec2.x) && (V1.y < vec2.y))
+                     || ((V1.x == vec2.x) && (V1.y == vec2.y) && (V1.z < vec2.z)) );
         }
     };
 
     template<> struct less<DirectX::SimpleMath::Vector4>
     {
-        bool operator()(const DirectX::SimpleMath::Vector4& V1, const DirectX::SimpleMath::Vector4& V2) const
+        bool operator()(const DirectX::SimpleMath::Vector4& V1, const DirectX::SimpleMath::Vector4& vec2) const
         {
-            return ( (V1.x < V2.x)
-                     || ((V1.x == V2.x) && (V1.y < V2.y))
-                     || ((V1.x == V2.x) && (V1.y == V2.y) && (V1.z < V2.z))
-                     || ((V1.x == V2.x) && (V1.y == V2.y) && (V1.z == V2.z) && (V1.w < V2.w)) );
+            return ( (V1.x < vec2.x)
+                     || ((V1.x == vec2.x) && (V1.y < vec2.y))
+                     || ((V1.x == vec2.x) && (V1.y == vec2.y) && (V1.z < vec2.z))
+                     || ((V1.x == vec2.x) && (V1.y == vec2.y) && (V1.z == vec2.z) && (V1.w < vec2.w)) );
         }
     };
 
