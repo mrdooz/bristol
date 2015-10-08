@@ -226,4 +226,20 @@ namespace parser
     }
     return false;
   }
+
+  //-----------------------------------------------------------------------------
+  void InputBuffer::SaveState()
+  {
+    _saveStack.push_back(_idx);
+  }
+
+  //-----------------------------------------------------------------------------
+  void InputBuffer::RestoreState(bool onlyPop)
+  {
+    if (!onlyPop)
+    {
+      _idx = _saveStack.back();
+    }
+    _saveStack.pop_back();
+  }
 }

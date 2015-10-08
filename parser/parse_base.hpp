@@ -13,7 +13,7 @@ namespace parser
   struct InputBuffer;
 
   bool ParseBool(InputBuffer& buf, bool* res);
-  bool ParseFloat(InputBuffer& buf, float* res);
+  bool ParseFloat(InputBuffer& buf, float* res, bool* success = nullptr);
 #if PARSER_WITH_VECTOR_TYPES
   bool ParseColor(InputBuffer& buf, color* res);
   bool ParseVec2(InputBuffer& buf, vec2* res);

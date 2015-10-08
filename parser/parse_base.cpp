@@ -35,21 +35,22 @@ namespace parser
   }
 
   //-----------------------------------------------------------------------------
-  bool ParseFloat(InputBuffer& buf, float* res)
+  bool ParseFloat(InputBuffer& buf, float* res, bool* success)
   {
+    buf.SaveState();
+
     char ch;
     CHECKED_OP(buf.OneOf("-+", 2, &ch));
     bool neg = ch == '-';
 
+    int numLeadingDigits = 0;
+    int numTrailingDigits = 0;
+
     int whole = 0;
     // find whole part if one exists
-    while (true)
+    while (buf.Satifies(InputBuffer::IsDigit, &ch))
     {
-      CHECKED_OP(buf.Get(&ch));
-      if (!InputBuffer::IsDigit(ch))
-      {
-        break;
-      }
+      numLeadingDigits++;
       whole = whole * 10 + (ch - '0');
     }
 
@@ -65,6 +66,7 @@ namespace parser
       {
         ++len;
         frac = frac * 10 + (ch - '0');
+        numTrailingDigits++;
       }
 
       if (len)
@@ -80,6 +82,12 @@ namespace parser
     }
 
     *res = tmp;
+
+    if (success)
+    {
+      *success = numLeadingDigits > 0 || numTrailingDigits > 0;
+    }
+    buf.RestoreState(success != nullptr);
     return true;
   }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <deque>
 namespace parser
 {
 
@@ -34,6 +35,11 @@ namespace parser
     bool Eof();
 
     bool InnerScope(const char* delim, InputBuffer* scope);
+
+    void SaveState();
+    void RestoreState(bool onlyPop=false);
+
+    std::deque<size_t> _saveStack;
 
     const char* _buf;
     size_t _idx;
