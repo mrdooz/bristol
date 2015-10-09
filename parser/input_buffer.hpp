@@ -20,6 +20,7 @@ namespace parser
     void Rewind(size_t len);
     bool Get(char* res);
     bool OneOf(const char* str, size_t len, char* res);
+    bool OneOfIdx(const char* str, size_t len, int* res);
     bool Expect(char ch);
     bool SkipUntil(char ch, bool consume);
     bool SkipWhile(const std::function<bool(char)>& fn, size_t* end);

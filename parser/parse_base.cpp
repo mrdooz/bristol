@@ -56,8 +56,12 @@ namespace parser
 
     float tmp = (neg ? -1.f : 1.f) * whole;
 
-    // If we ended on a '.', parse the fraction
-    if (ch == '.')
+    // look for a '.'
+    bool hasFraction;
+    if (!buf.ConsumeIf('.', &hasFraction))
+      return false;
+
+    if (hasFraction)
     {
       // fractional
       int frac = 0;
@@ -74,20 +78,16 @@ namespace parser
         tmp += frac / powf(10.f, (float)len);
       }
     }
-    else
-    {
-      // we've gobbled up a character that doesn't belong to the float, so spit
-      // it back out
-      buf.Rewind(1);
-    }
 
     *res = tmp;
 
+    // If success is set, then we only want to advance if the parse was succesful
+    bool validParse = numLeadingDigits > 0 || numTrailingDigits > 0;
     if (success)
     {
-      *success = numLeadingDigits > 0 || numTrailingDigits > 0;
+      *success = validParse;
     }
-    buf.RestoreState(success != nullptr);
+    buf.RestoreState(!success || validParse);
     return true;
   }
 

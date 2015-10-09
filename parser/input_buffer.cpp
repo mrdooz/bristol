@@ -52,7 +52,9 @@ namespace parser
   bool InputBuffer::ConsumeIf(char ch, bool* res)
   {
     char tmp;
-    CHECKED_OP(Peek(&tmp));
+    // Testing at EOF is ok, and will always succeed
+    if (!Peek(&tmp))
+      return true;
 
     bool localRes = ch == tmp;
     if (res)
@@ -67,21 +69,34 @@ namespace parser
   //-----------------------------------------------------------------------------
   bool InputBuffer::OneOf(const char* str, size_t len, char* res)
   {
-    char ch;
     *res = 0;
+    int idx;
+    if (!OneOfIdx(str, len, &idx))
+      return false;
+
+    if (idx == -1)
+      return true;
+
+    *res = str[idx];
+    return true;
+  }
+
+  //-----------------------------------------------------------------------------
+  bool InputBuffer::OneOfIdx(const char* str, size_t len, int* res)
+  {
+    char ch;
+    *res = -1;
     CHECKED_OP(Peek(&ch));
 
-    *res = -1;
     for (size_t i = 0; i < len; ++i)
     {
       if (ch == str[i])
       {
         CHECKED_OP(Consume());
-        *res = ch;
+        *res = (int)i;
         break;
       }
     }
-
     return true;
   }
 
@@ -159,11 +174,11 @@ namespace parser
       if (!fn(ch))
       {
         Rewind(1);
-        *end = _idx;
-        return true;
+        break;
       }
     }
-    return false;
+    *end = _idx;
+    return true;
   }
 
   //-----------------------------------------------------------------------------
