@@ -29,22 +29,22 @@ namespace eval
       {
         expression->push_back(Token(Token::BinOp(idx)));
       }
-      else if (buf.ConsumeIf('(', &res) && res)
+      else if (buf.ConsumeIf('(') )
       {
         expression->push_back(Token(Token::Type::LeftParen));
       }
-      else if (buf.ConsumeIf(')', &res) && res)
+      else if (buf.ConsumeIf(')'))
       {
         expression->push_back(Token(Token::Type::RightParen));
       }
-      else if (buf.ConsumeIf(',', &res) && res)
+      else if (buf.ConsumeIf(','))
       {
         expression->push_back(Token(Token::Type::Comma));
       }
       else if (parser::ParseIdentifier(buf, &fn, false))
       {
         // differentiate between function calls and vars
-        if (buf.Peek() == '(')
+        if (!buf.Eof() &&  buf.Peek() == '(')
           expression->push_back(Token(Token::Type::FuncCall, fn));
         else
           expression->push_back(Token(Token::Type::Var, fn));

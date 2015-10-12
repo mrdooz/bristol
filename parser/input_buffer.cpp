@@ -5,6 +5,7 @@ using namespace std;
 namespace parser
 {
 
+
   //-----------------------------------------------------------------------------
   InputBuffer::InputBuffer() : _buf(nullptr), _idx(0), _len(0) {}
 
@@ -27,27 +28,25 @@ namespace parser
   void InputBuffer::Rewind(size_t len) { _idx = len < _idx ? _idx - len : 0; }
 
   //-----------------------------------------------------------------------------
-  bool InputBuffer::Get(char* res)
+  char InputBuffer::Get()
   {
     if (Eof())
-      return false;
+      throw ParseExpcetion("Get at EOF");
 
-    *res = _buf[_idx++];
-    // Because idx is incremented, we compare against <=, and not just <
-    return _idx <= _len;
+    return _buf[_idx++];
   }
 
   //-----------------------------------------------------------------------------
-  bool InputBuffer::Consume()
+  void InputBuffer::Consume()
   {
     if (Eof())
-      return false;
+      throw ParseExpcetion("Get at EOF");
 
     ++_idx;
-    return true;
   }
 
   //-----------------------------------------------------------------------------
+<<<<<<< Updated upstream
   bool InputBuffer::ConsumeIf(char ch, bool* res)
   {    
     // Testing at EOF is ok, and will always succeed
@@ -59,8 +58,17 @@ namespace parser
     bool localRes = ch == tmp;
     if (res)
       *res = localRes;
+=======
+  bool InputBuffer::ConsumeIf(char ch)
+  {    
+    if (Eof())
+      return false;
+>>>>>>> Stashed changes
 
-    return localRes ? Consume() : true;
+    bool consume = Peek() == ch;
+    if (consume)
+      Consume();
+    return consume;
   }
 
   //-----------------------------------------------------------------------------
@@ -91,7 +99,7 @@ namespace parser
     {
       if (ch == str[i])
       {
-        CHECKED_OP(Consume());
+        Consume();
         *res = (int)i;
         break;
       }
@@ -100,19 +108,30 @@ namespace parser
   }
 
   //-----------------------------------------------------------------------------
-  bool InputBuffer::Satifies(const function<bool(char)>& fn, char* res)
+  bool InputBuffer::Satifies(const function<bool(char)>& fn, char* out)
   {
+<<<<<<< HEAD
     // TODO: handle eof
     char ch = Peek();
+=======
+<<<<<<< Updated upstream
+    char ch;
+    CHECKED_OP(Peek(&ch));
+>>>>>>> updates
 
     if (res)
       *res = ch;
 
     bool tmp = fn(ch);
     if (!tmp)
+=======
+    if (Eof())
+>>>>>>> Stashed changes
       return false;
 
-    return Consume();
+    char ch = Get();
+    *out = ch;
+    return fn(ch);
   }
 
   //-----------------------------------------------------------------------------
@@ -137,8 +156,7 @@ namespace parser
   //-----------------------------------------------------------------------------
   bool InputBuffer::Expect(char ch)
   {
-    char tmp;
-    return Get(&tmp) && tmp == ch;
+    return Get() == ch;
   }
 
   //-----------------------------------------------------------------------------
@@ -150,33 +168,34 @@ namespace parser
   //-----------------------------------------------------------------------------
   bool InputBuffer::SkipUntil(char ch, bool consume)
   {
-    char tmp;
-    while (Get(&tmp))
+    while (!Eof())
     {
+      char tmp = Peek();
       if (tmp == ch)
       {
-        if (!consume)
-          Rewind(1);
+        if (consume)
+          Consume();
         return true;
       }
     }
+
     return false;
   }
 
   //-----------------------------------------------------------------------------
   bool InputBuffer::SkipUntilOneOf(const char* str, size_t len, char* res, bool consume)
   {
-    char tmp;
-    while (Get(&tmp))
+    while (!Eof())
     {
+      char tmp = Peek();
       for (size_t i = 0; i < len; ++i)
       {
         if (tmp == str[i])
         {
           if (res)
             *res = tmp;
-          if (!consume)
-            Rewind(1);
+          if (consume)
+            Consume();
           return true;
         }
       }
@@ -185,19 +204,31 @@ namespace parser
   }
 
   //-----------------------------------------------------------------------------
+<<<<<<< HEAD
   void InputBuffer::SkipWhile(const function<bool(char)>& fn, size_t* end)
+=======
+<<<<<<< Updated upstream
+  bool InputBuffer::SkipWhile(const function<bool(char)>& fn, size_t* end)
+=======
+  void InputBuffer::SkipWhile(const function<bool(char)>& fn)
+>>>>>>> Stashed changes
+>>>>>>> updates
   {
-    size_t start = _idx;
-    char ch;
-    while (Get(&ch))
+    while (!Eof())
     {
+      char ch = Peek();
       if (!fn(ch))
-      {
-        Rewind(1);
-        break;
-      }
+        return;
+      Consume();
     }
+<<<<<<< Updated upstream
     *end = _idx;
+<<<<<<< HEAD
+=======
+    return true;
+=======
+>>>>>>> Stashed changes
+>>>>>>> updates
   }
 
   //-----------------------------------------------------------------------------

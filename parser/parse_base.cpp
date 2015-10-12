@@ -13,8 +13,17 @@ namespace parser
   bool ParseBool(InputBuffer& buf, bool* res)
   {
     size_t start = buf._idx;
+<<<<<<< Updated upstream
     size_t end;
+<<<<<<< HEAD
     buf.SkipWhile(InputBuffer::IsAlphaNum, &end);
+=======
+    CHECKED_OP(buf.SkipWhile(InputBuffer::IsAlphaNum, &end));
+=======
+    buf.SkipWhile(InputBuffer::IsAlphaNum);
+    size_t end = buf._idx;
+>>>>>>> Stashed changes
+>>>>>>> updates
 
     string str;
     CHECKED_OP(buf.SubStr(start, end - start, &str));
@@ -57,11 +66,7 @@ namespace parser
     float tmp = (neg ? -1.f : 1.f) * whole;
 
     // look for a '.'
-    bool hasFraction;
-    if (!buf.ConsumeIf('.', &hasFraction))
-      return false;
-
-    if (hasFraction)
+    if (buf.ConsumeIf('.'))
     {
       // fractional
       int frac = 0;
@@ -189,8 +194,17 @@ namespace parser
   {
     // an identifier consists of 'id:', so we parse the id, and then find the trailing ':'
     size_t start = buf._idx;
+<<<<<<< Updated upstream
     size_t end;
+<<<<<<< HEAD
     buf.SkipWhile(InputBuffer::IsAlphaNum, &end);
+=======
+    CHECKED_OP(buf.SkipWhile(InputBuffer::IsAlphaNum, &end));
+=======
+    buf.SkipWhile(InputBuffer::IsAlphaNum);
+    size_t end = buf._idx;
+>>>>>>> Stashed changes
+>>>>>>> updates
 
     if (colon)
     {
