@@ -14,7 +14,7 @@ namespace parser
   {
     size_t start = buf._idx;
     size_t end;
-    CHECKED_OP(buf.SkipWhile(InputBuffer::IsAlphaNum, &end));
+    buf.SkipWhile(InputBuffer::IsAlphaNum, &end);
 
     string str;
     CHECKED_OP(buf.SubStr(start, end - start, &str));
@@ -190,7 +190,7 @@ namespace parser
     // an identifier consists of 'id:', so we parse the id, and then find the trailing ':'
     size_t start = buf._idx;
     size_t end;
-    CHECKED_OP(buf.SkipWhile(InputBuffer::IsAlphaNum, &end));
+    buf.SkipWhile(InputBuffer::IsAlphaNum, &end);
 
     if (colon)
     {

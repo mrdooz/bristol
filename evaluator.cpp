@@ -43,9 +43,8 @@ namespace eval
       }
       else if (parser::ParseIdentifier(buf, &fn, false))
       {
-        char ch;
         // differentiate between function calls and vars
-        if (buf.Peek(&ch) && ch == '(')
+        if (buf.Peek() == '(')
           expression->push_back(Token(Token::Type::FuncCall, fn));
         else
           expression->push_back(Token(Token::Type::Var, fn));

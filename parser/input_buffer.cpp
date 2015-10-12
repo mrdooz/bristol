@@ -15,13 +15,12 @@ namespace parser
   InputBuffer::InputBuffer(const vector<char>& buf) : _buf(buf.data()), _idx(0), _len(buf.size()) {}
 
   //-----------------------------------------------------------------------------
-  bool InputBuffer::Peek(char* res)
+  char InputBuffer::Peek()
   {
     if (Eof())
-      return false;
+      throw exception("Peek at EOF");
 
-    *res = _buf[_idx];
-    return true;
+    return _buf[_idx];
   }
 
   //-----------------------------------------------------------------------------
@@ -50,11 +49,12 @@ namespace parser
 
   //-----------------------------------------------------------------------------
   bool InputBuffer::ConsumeIf(char ch, bool* res)
-  {
-    char tmp;
+  {    
     // Testing at EOF is ok, and will always succeed
-    if (!Peek(&tmp))
+    if (Eof())
       return true;
+
+    char tmp = Peek();
 
     bool localRes = ch == tmp;
     if (res)
@@ -84,9 +84,8 @@ namespace parser
   //-----------------------------------------------------------------------------
   bool InputBuffer::OneOfIdx(const char* str, size_t len, int* res)
   {
-    char ch;
     *res = -1;
-    CHECKED_OP(Peek(&ch));
+    char ch = Peek();
 
     for (size_t i = 0; i < len; ++i)
     {
@@ -103,8 +102,8 @@ namespace parser
   //-----------------------------------------------------------------------------
   bool InputBuffer::Satifies(const function<bool(char)>& fn, char* res)
   {
-    char ch;
-    CHECKED_OP(Peek(&ch));
+    // TODO: handle eof
+    char ch = Peek();
 
     if (res)
       *res = ch;
@@ -186,7 +185,7 @@ namespace parser
   }
 
   //-----------------------------------------------------------------------------
-  bool InputBuffer::SkipWhile(const function<bool(char)>& fn, size_t* end)
+  void InputBuffer::SkipWhile(const function<bool(char)>& fn, size_t* end)
   {
     size_t start = _idx;
     char ch;
@@ -199,7 +198,6 @@ namespace parser
       }
     }
     *end = _idx;
-    return true;
   }
 
   //-----------------------------------------------------------------------------

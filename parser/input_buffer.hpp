@@ -16,7 +16,7 @@ namespace parser
     InputBuffer();
     InputBuffer(const char* buf, size_t len);
     InputBuffer(const std::vector<char>& buf);
-    bool Peek(char* res);
+    char Peek();
     void Rewind(size_t len);
     bool Get(char* res);
     bool OneOf(const char* str, size_t len, char* res);
@@ -24,7 +24,7 @@ namespace parser
     bool Expect(char ch);
     bool SkipUntil(char ch, bool consume);
     bool SkipUntilOneOf(const char* str, size_t len, char* res, bool consume);
-    bool SkipWhile(const std::function<bool(char)>& fn, size_t* end);
+    void SkipWhile(const std::function<bool(char)>& fn, size_t* end);
     bool Satifies(const std::function<bool(char)>& fn, char* ch);
     void SkipWhitespace();
     bool SubStr(size_t start, size_t len, std::string* res);
