@@ -165,6 +165,27 @@ namespace parser
   }
 
   //-----------------------------------------------------------------------------
+  bool InputBuffer::SkipUntilOneOf(const char* str, size_t len, char* res, bool consume)
+  {
+    char tmp;
+    while (Get(&tmp))
+    {
+      for (size_t i = 0; i < len; ++i)
+      {
+        if (tmp == str[i])
+        {
+          if (res)
+            *res = tmp;
+          if (!consume)
+            Rewind(1);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  //-----------------------------------------------------------------------------
   bool InputBuffer::SkipWhile(const function<bool(char)>& fn, size_t* end)
   {
     size_t start = _idx;

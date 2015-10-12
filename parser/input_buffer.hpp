@@ -23,6 +23,7 @@ namespace parser
     bool OneOfIdx(const char* str, size_t len, int* res);
     bool Expect(char ch);
     bool SkipUntil(char ch, bool consume);
+    bool SkipUntilOneOf(const char* str, size_t len, char* res, bool consume);
     bool SkipWhile(const std::function<bool(char)>& fn, size_t* end);
     bool Satifies(const std::function<bool(char)>& fn, char* ch);
     void SkipWhitespace();

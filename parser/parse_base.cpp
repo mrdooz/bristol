@@ -176,9 +176,10 @@ namespace parser
   //-----------------------------------------------------------------------------
   bool ParseString(InputBuffer& buf, string* res)
   {
-    CHECKED_OP(buf.SkipUntil('\'', true));
+    char ch;
+    CHECKED_OP(buf.SkipUntilOneOf("'\"", 2, &ch, true));
     size_t start = buf._idx;
-    CHECKED_OP(buf.SkipUntil('\'', true));
+    CHECKED_OP(buf.SkipUntil(ch, true));
     size_t end = buf._idx;
     return buf.SubStr(start, end - start - 1, res);
   }

@@ -211,7 +211,10 @@ namespace eval
         {
           const Token& op = operatorStack.back();
           if (op.type == Token::Type::BinOp && BINOP_PRIO[op.binOp] >= prio)
+          {
             ApplyBinOp(op.binOp);
+            operatorStack.pop_back();
+          }
           else
             break;
         }
